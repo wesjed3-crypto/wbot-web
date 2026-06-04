@@ -13,7 +13,7 @@ $linked = railway link --check 2>$null
 if ($linked -match "^https://railway.app/project/") {
   Write-Host "Proyecto ya linkeado: $linked" -ForegroundColor Green
 } else {
-  railway init $projectName --yes 2>&1
+  railway init --name $projectName 2>&1
   if ($LASTEXITCODE -ne 0) {
     Write-Host "Error creando proyecto, usa 'railway link' manualmente y vuelve a correr el script." -ForegroundColor Red
     exit 1
