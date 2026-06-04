@@ -1,0 +1,10 @@
+{
+  "build": {
+    "command": "npm install --production && npm cache clean --force"
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "healthcheckPath": "/health",
+    "restartPolicyType": "always"
+  }
+}

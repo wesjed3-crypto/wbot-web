@@ -1,0 +1,20 @@
+{
+  "name": "wbot-web",
+  "version": "1.0.0",
+  "description": "Web dashboard for wbot Discord bot",
+  "main": "web.js",
+  "type": "module",
+  "scripts": {
+    "start": "node web.js"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "connect-mongo": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mongoose": "^9.6.3"
+  }
+}

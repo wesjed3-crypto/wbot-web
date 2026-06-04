@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>wbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=6.8">
+  </head>
+  <body>
+    <main class="site-shell">
+      <header class="nav">
+        <a class="brand" href="/wbot" aria-label="wbot home">
+          <span class="brand-mark discord-mark" aria-hidden="true">
+            <svg viewBox="0 0 245 240" role="img" focusable="false">
+              <path fill="currentColor" d="M104.4 104.8c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.3-5 10.2-11.1 0-6.1-4.5-11.1-10.2-11.1Zm36.4 0c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.3-5 10.2-11.1 0-6.1-4.5-11.1-10.2-11.1Z"/>
+              <path fill="currentColor" d="M189.5 20h-134C44.2 20 35 29.2 35 40.6v135.2c0 11.4 9.2 20.6 20.5 20.6h113.4l-5.3-18.5 12.8 11.9 12.1 11.2 21.5 19V40.6c0-11.4-9.2-20.6-20.5-20.6Zm-38.7 130.5s-3.6-4.3-6.6-8.1c13.1-3.7 18.1-11.9 18.1-11.9-4.1 2.7-8 4.6-11.5 5.9-5 2.1-9.8 3.4-14.5 4.2-9.6 1.8-18.4 1.3-25.9-.1-5.7-1.1-10.6-2.7-14.7-4.2-2.3-.9-4.8-2-7.3-3.4-.3-.2-.6-.3-.9-.5-.2-.1-.3-.2-.4-.3-1.8-1-2.8-1.7-2.8-1.7s4.8 8 17.5 11.8c-3 3.8-6.7 8.3-6.7 8.3-22.1-.7-30.5-15.2-30.5-15.2 0-32.2 14.4-58.3 14.4-58.3 14.4-10.8 28.1-10.5 28.1-10.5l1 1.2c-18 5.2-26.3 13.1-26.3 13.1s2.2-1.2 5.9-2.9c10.7-4.7 19.2-6 22.7-6.4.6-.1 1.1-.2 1.7-.2 6.1-.8 13-1 20.2-.2 9.5.9 19.7 3.9 30.1 9.6 0 0-7.9-7.5-24.9-12.7l1.4-1.6s13.7-.3 28.1 10.5c0 0 14.4 26.1 14.4 58.3 0 .1-8.5 14.6-30.6 15.3Z"/>
+            </svg>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Principal">
+          <a href="#home">🏠 Home</a>
+          <a href="#features">🛠️ Services</a>
+          <a href="#dashboard">💻 Dashboard</a>
+          <a href="#automod">🛡️ Automod</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="button secondary" id="inviteButton" href="#" target="_blank" rel="noreferrer">🤖 Invitar</a>
+          <a class="button primary" href="/login" id="loginButton">🔑 Login</a>
+          <a class="button secondary hidden" href="/logout" id="logoutLink">🚪 Salir</a>
+        </div>
+      </header>
+
+      <section class="hero" id="home">
+        <canvas id="snowflakeCanvas" aria-hidden="true"></canvas>
+        <div class="hero-avatar-container">
+          <div class="glowing-avatar">
+            <img class="avatar-image" src="/wbot-avatar.jpg" alt="wbot avatar">
+            <div class="avatar-ring"></div>
+            <div class="avatar-pulse"></div>
+          </div>
+        </div>
+        <div class="hero-content">
+          <span class="kicker">Discord moderation dashboard</span>
+          <h1 id="brandName">wbot</h1>
+          <div class="hero-signature">by wesjed ツ</div>
+          <p class="hero-description">Modera servidores, configura automod y gestiona avisos desde un panel limpio conectado a tu bot.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="/login" id="heroLoginButton">🔌 Conectar Discord</a>
+            <a class="button secondary" href="#dashboard">📊 Ver panel</a>
+          </div>
+        </div>
+        <div class="badge-row">
+          <span class="mini-badge">🚫 Anti spam</span>
+          <span class="mini-badge">📝 Logs</span>
+          <span class="mini-badge">⚠️ Warnings</span>
+          <span class="mini-badge">🛡️ Automod</span>
+        </div>
+      </section>
+
+      <section class="owner-panel hidden" id="ownerPanel">
+        <div class="owner-top-row">
+          <div>
+            <span class="kicker">👑 Owner controls</span>
+            <h2>🤖 Control del bot</h2>
+            <p id="botState">Estado: desconocido</p>
+          </div>
+          <div class="owner-actions">
+            <button class="button primary" type="button" data-bot-action="start">🟢 Iniciar</button>
+            <button class="button secondary" type="button" data-bot-action="restart">🔄 Reiniciar</button>
+            <button class="button danger" type="button" data-bot-action="stop">🔴 Apagar</button>
+            <button class="button secondary" type="button" id="toggleBotGuildsBtn">🔍 Ver Servidores del Bot</button>
+            <button class="button secondary" type="button" id="viewBotLogsBtn">📋 Ver Logs</button>
+            <button class="button secondary" type="button" id="ownerSupportBtn">👑 Soporte del Creador</button>
+          </div>
+        </div>
+        <div id="botLogsContainer" class="hidden" style="margin-top: 16px;">
+          <h3>📋 Logs del Bot</h3>
+          <pre id="botLogs" style="background: #000; color: #0f0; padding: 12px; border-radius: 8px; max-height: 300px; overflow-y: auto; font-size: 13px; white-space: pre-wrap; word-break: break-all;"></pre>
+          <button class="button secondary" type="button" id="refreshBotLogsBtn" style="margin-top: 8px;">🔄 Refrescar Logs</button>
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="section-heading">
+          <h2>🛠️ Services</h2>
+          <p>Herramientas esenciales para moderar sin ruido. 🌟</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>⚔️ Moderacion</h3>
+            <p>Ban, kick, timeout y avisos con registro de casos. 📄</p>
+            <span>💻 Slash commands</span>
+            <span>💾 Casos guardados</span>
+          </article>
+          <article class="feature-card">
+            <h3>🛡️ Automod</h3>
+            <p>Bloquea invitaciones, spam, menciones masivas y palabras. 🚫</p>
+            <span>⚙️ Filtros editables</span>
+            <span>⚖️ Sanciones automáticas</span>
+          </article>
+          <article class="feature-card">
+            <h3>📝 Logs</h3>
+            <p>Canal configurable para acciones y eventos importantes. 🔔</p>
+            <span>🌍 Por servidor</span>
+            <span>🎨 Embeds limpios</span>
+          </article>
+          <article class="feature-card">
+            <h3>💻 Dashboard</h3>
+            <p>Cada admin configura su servidor desde la web. ⚡</p>
+            <span>🔑 OAuth Discord</span>
+            <span>🔌 Multi servidor</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="dashboard-section" id="dashboard">
+        <div class="section-heading compact">
+          <h2>⚙️ Ajustes del servidor</h2>
+          <p id="notice">Inicia sesión con Discord para ver tus servidores administrables. 🔑</p>
+        </div>
+
+        <div class="session-row">
+          <div>
+            <span class="kicker">👤 Sesión Activa</span>
+            <strong id="userName">Sin iniciar</strong>
+          </div>
+        </div>
+
+        <div class="server-selector-container" id="serverSelectorContainer">
+          <span class="kicker" style="margin-bottom: 8px; display: block;">📋 Elige un Servidor para Personalizar:</span>
+          <nav class="guild-list" id="guildList" aria-label="Servidores"></nav>
+        </div>
+
+        <form class="dashboard hidden" id="configForm">
+          <!-- Panel superior: Título, Regresar y Guardar -->
+          <div class="console-header span-2">
+            <div class="panel-heading">
+              <button type="button" class="button secondary" id="backToGuildsBtn">← 📋 Servidores</button>
+              <div class="selected-guild-identity">
+                <div id="selectedGuildIcon" class="guild-console-icon-wrap"></div>
+                <h3 id="selectedGuild">Ninguno</h3>
+              </div>
+              <button class="button save-btn" type="submit" id="saveConfigBtn">💾 Guardar cambios</button>
+            </div>
+          </div>
+
+          <!-- Menú Lateral de Pestañas -->
+          <aside class="console-sidebar">
+            <button type="button" class="tab-btn active" data-tab="tab-general">📜 Logs & Rol</button>
+            <button type="button" class="tab-btn" data-tab="tab-automod">🛡️ Filtros Automod</button>
+            <button type="button" class="tab-btn" data-tab="tab-welcome">👋 Bienvenidas</button>
+            <button type="button" class="tab-btn" data-tab="tab-antinuke">🚨 Antinuke</button>
+            <button type="button" class="tab-btn" data-tab="tab-limits">⚖️ Sanciones</button>
+            <button type="button" class="tab-btn" data-tab="tab-punishment-warns">🔄 Castigos x Warns</button>
+            <button type="button" class="tab-btn" data-tab="tab-words">🚫 Palabras</button>
+            <button type="button" class="tab-btn" data-tab="tab-reaction-roles">🎭 Roles por Reacción</button>
+            <button type="button" class="tab-btn" data-tab="tab-tickets">🎫 Tickets</button>
+            <button type="button" class="tab-btn" data-tab="tab-support">✉️ Soporte</button>
+          </aside>
+
+          <!-- Área de Contenido de la Consola -->
+          <div class="console-content">
+            
+            <!-- Pestaña 1: General & Logs -->
+            <div class="tab-content" id="tab-general">
+              <div class="panel">
+                <h3>Logs & Roles</h3>
+                <p class="tab-desc">Configura los canales y roles de moderación principales.</p>
+                <label>Canal de logs <select name="logChannelId"><option value="">Seleccionar...</option></select></label>
+                <label>Rol mute opcional <select name="mutedRoleId"><option value="">Seleccionar...</option></select></label>
+              </div>
+
+              <div class="panel" style="margin-top: 16px;">
+                <h3>Eventos Registrados</h3>
+                <p class="tab-desc">Activa o desactiva qué eventos se enviarán al canal de logs.</p>
+                <div class="switch-grid">
+                  <label><input type="checkbox" name="logMessageDelete"> Mensajes Eliminados</label>
+                  <label><input type="checkbox" name="logMessageUpdate"> Mensajes Editados</label>
+                  <label><input type="checkbox" name="logGuildBanAdd"> Baneos Aplicados</label>
+                  <label><input type="checkbox" name="logGuildBanRemove"> Desbaneos de Usuarios</label>
+                  <label><input type="checkbox" name="logKick"> Expulsiones (Kicks)</label>
+                  <label><input type="checkbox" name="logTimeout"> Silencios (Timeouts)</label>
+                  <label><input type="checkbox" name="logGuildMemberAdd"> Entrada de Miembros</label>
+                  <label><input type="checkbox" name="logGuildMemberRemove"> Salida de Miembros</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña 2: Automod -->
+            <div class="tab-content hidden" id="tab-automod">
+              <div class="panel">
+                <h3>Filtros de Automod</h3>
+                <p class="tab-desc">Activa o desactiva filtros de moderación en tiempo real.</p>
+                <div class="switch-grid">
+                  <label><input type="checkbox" name="blockInvites"> Bloquear Invitaciones</label>
+                  <label><input type="checkbox" name="blockLinks"> Bloquear Enlaces externos</label>
+                  <label><input type="checkbox" name="blockBadWords"> Bloquear Palabras prohibidas</label>
+                  <label><input type="checkbox" name="blockMassMentions"> Bloquear Menciones masivas</label>
+                  <label><input type="checkbox" name="blockSpam"> Bloquear Spam</label>
+                  <label><input type="checkbox" name="blockCaps"> Bloquear Mayúsculas excesivas</label>
+                </div>
+              </div>
+
+              <div class="panel" style="margin-top: 16px;">
+                <h3>Umbrales del Automod</h3>
+                <p class="tab-desc">Personaliza los parámetros finos para la detección automática del bot.</p>
+                <label>Caracteres mínimos para Mayúsculas <input name="minCapsLen" type="number" min="1" max="100" placeholder="12"></label>
+                <label>Mensajes de spam permitidos en ventana <input name="spamMaxMessages" type="number" min="2" max="50" placeholder="6"></label>
+                <label>Ventana de tiempo de spam (milisegundos) <input name="spamWindowMs" type="number" min="1000" max="60000" step="500" placeholder="8000"></label>
+              </div>
+            </div>
+
+            <!-- Pestaña 3: Bienvenidas (Embeds) -->
+            <div class="tab-content hidden" id="tab-welcome">
+              <div class="panel">
+                <h3>👋 Embed de Bienvenida</h3>
+                <p class="tab-desc">Configura la tarjeta de bienvenida para nuevos miembros. Soportado: {user}, {server}, {memberCount}</p>
+                
+                <label>Canal de Bienvenida <select name="welcomeChannelId"><option value="">Seleccionar...</option></select></label>
+                
+                <div class="switch-grid" style="margin-top: 16px;">
+                  <label><input type="checkbox" name="welcomeEmbedEnabled"> Activar Embed</label>
+                  <label><input type="checkbox" name="welcomeThumbnail"> Miniatura del avatar</label>
+                </div>
+                
+                <label style="margin-top: 16px;">Título del Embed <input name="welcomeTitle" placeholder="👋 ¡Bienvenido/a!"></label>
+                <label>Descripción del Embed <textarea name="welcomeDescription" rows="3" placeholder="¡Hola {user}! Bienvenido/a a {server}..."></textarea></label>
+                <label>Color del Embed (HEX) <input name="welcomeColor" type="text" placeholder="#8b5cf6"></label>
+              </div>
+
+              <div class="panel" style="margin-top: 16px;">
+                <h3>🏃 Embed de Despedida</h3>
+                <p class="tab-desc">Configura la tarjeta que se envía cuando alguien abandona el servidor.</p>
+                
+                <label>Canal de Despedida <select name="farewellChannelId"><option value="">Seleccionar...</option></select></label>
+                
+                <div class="switch-grid" style="margin-top: 16px;">
+                  <label><input type="checkbox" name="farewellEmbedEnabled"> Activar Embed</label>
+                  <label><input type="checkbox" name="farewellThumbnail"> Miniatura del avatar</label>
+                </div>
+                
+                <label style="margin-top: 16px;">Título del Embed <input name="farewellTitle" placeholder="🏃 ¡Hasta pronto!"></label>
+                <label>Descripción del Embed <textarea name="farewellDescription" rows="3" placeholder="¡**{user}** ha salido del servidor!"></textarea></label>
+                <label>Color del Embed (HEX) <input name="farewellColor" type="text" placeholder="#ef4444"></label>
+              </div>
+            </div>
+
+            <!-- Pestaña 4: Antinuke -->
+            <div class="tab-content hidden" id="tab-antinuke">
+              <div class="panel">
+                <h3>🚨 Protección Antinuke (Solo contra BOTS)</h3>
+                <p class="tab-desc">Protege tu servidor bloqueando automáticamente bots maliciosos que realicen acciones destructivas masivas en 1 minuto. El bot infractor recibirá un DM explicativo con tus enlaces de soporte y será baneado de inmediato.</p>
+                
+                <div class="switch-grid">
+                  <label><input type="checkbox" name="antiNukeEnabled"> Activar Protección Antinuke</label>
+                </div>
+                
+                <label>Borrados de canales límite (en 60s) <input name="antiNukeMaxChannelDeletes" type="number" min="1" max="20" placeholder="3"></label>
+                <label>Borrados de roles límite (en 60s) <input name="antiNukeMaxRoleDeletes" type="number" min="1" max="20" placeholder="3"></label>
+                <label>Baneos masivos límite (en 60s) <input name="antiNukeMaxBans" type="number" min="1" max="20" placeholder="3"></label>
+              </div>
+            </div>
+
+            <!-- Pestaña 5: Sanciones & Límites -->
+            <div class="tab-content hidden" id="tab-limits">
+              <div class="panel">
+                <h3>Límites del Automod</h3>
+                <label>Máximo de menciones <input name="maxMentions" type="number" min="1" max="25"></label>
+                <label>Porcentaje de mayúsculas <input name="maxCapsPercent" type="number" min="30" max="100"></label>
+              </div>
+              
+              <div class="panel" style="margin-top: 16px;">
+                <h3>Sanciones Automáticas</h3>
+                <p class="tab-desc">Define qué pasa cuando un usuario alcanza ciertos avisos.</p>
+                <label>Avisos para timeout <input name="warnsForTimeout" type="number" min="1" max="20"></label>
+                <label>Minutos de timeout <input name="timeoutMinutes" type="number" min="1" max="40320"></label>
+                <label>Avisos para expulsión <input name="warnsForKick" type="number" min="1" max="50"></label>
+              </div>
+            </div>
+
+            <!-- Pestaña 6: Castigos por Warns -->
+            <div class="tab-content hidden" id="tab-punishment-warns">
+              <div class="panel">
+                <h3>🔄 Castigos Automáticos por Warns</h3>
+                <p class="tab-desc">Configura castigos que se aplican automáticamente al alcanzar cierto número de warns.</p>
+                <table style="width:100%; border-collapse: collapse; margin-top: 8px;">
+                  <thead>
+                    <tr style="text-align:left; border-bottom: 1px solid #334155;">
+                      <th style="padding: 8px 4px;">Warns</th>
+                      <th style="padding: 8px 4px;">Acción</th>
+                      <th style="padding: 8px 4px;">Duración (min)</th>
+                      <th style="padding: 8px 4px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="punishmentWarnsTable"></tbody>
+                </table>
+                <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                  <input id="newPWarns" type="number" min="1" max="50" placeholder="Warns" style="width:80px;">
+                  <select id="newPAction" style="width:130px;">
+                    <option value="timeout">Timeout</option>
+                    <option value="kick">Expulsar</option>
+                    <option value="ban">Banear</option>
+                  </select>
+                  <input id="newPDuration" type="number" min="1" max="40320" placeholder="Min (timeout)" style="width:130px;">
+                  <button type="button" id="addPunishmentBtn" class="btn">Añadir</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña 7: Palabras Prohibidas -->
+            <div class="tab-content hidden" id="tab-words">
+              <div class="panel">
+                <h3>Lista de Palabras Prohibidas</h3>
+                <p class="tab-desc">Añade palabras censuradas (una por línea o separadas por comas).</p>
+                <textarea name="badWordsText" rows="10" placeholder="Ejemplo: spam, tonto, etc."></textarea>
+              </div>
+            </div>
+
+            <!-- Pestaña 7: Reaction Roles -->
+            <div class="tab-content hidden" id="tab-reaction-roles">
+              <div class="panel">
+                <h3>🎭 Roles por Reacción</h3>
+                <p class="tab-desc">Crea paneles donde los usuarios reaccionan con emojis para obtener roles automáticamente.</p>
+
+                <div id="reactionPanelsList"></div>
+
+                <button type="button" class="button primary" id="createReactionPanelBtn" style="margin-top: 16px; width: 100%;">➕ Nuevo Panel</button>
+              </div>
+            </div>
+
+            <!-- Pestaña 8: Tickets -->
+            <div class="tab-content hidden" id="tab-tickets">
+              <div class="panel">
+                <h3>🎫 Paneles de Tickets</h3>
+                <p class="tab-desc">Crea paneles con botones personalizados. Cada botón crea un ticket en la categoría que elijas, con el rol de soporte que asignes.</p>
+
+                <div id="ticketPanelsList"></div>
+
+                <button type="button" class="button primary" id="createTicketPanelBtn" style="margin-top: 16px; width: 100%;">➕ Nuevo Panel de Tickets</button>
+              </div>
+            </div>
+
+            <!-- Pestaña 8: Soporte del Creador -->
+            <div class="tab-content hidden" id="tab-support">
+              <div class="panel support-card-panel">
+                <h3>✉️ Soporte & Contacto</h3>
+                <p class="tab-desc">Si tienes dudas, problemas con la configuración del bot o requieres ayuda técnica, puedes contactarme directamente por los siguientes medios:</p>
+                
+                <div class="support-details">
+                  <div class="support-item">
+                    <span class="support-label">Email de Contacto:</span>
+                    <strong class="support-value">wesjed0@gmail.com</strong>
+                  </div>
+                  <div class="support-item">
+                    <span class="support-label">Redes del creador:</span>
+                    <a href="https://guns.lol/wesjed" target="_blank" rel="noreferrer" class="button primary support-link-btn">guns.lol/wesjed 🔗</a>
+                  </div>
+                  <div class="support-item" style="margin-top: 10px;">
+                    <span class="support-label">Discord del creador:</span>
+                    <strong class="support-value" style="font-size: 16px; font-weight: 700; color: var(--text);">.wesjed</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </section>
+
+      <!-- Nueva Sección Consola Dedicada: Servidores del Bot (para el Propietario) -->
+      <section class="dashboard-section hidden" id="botGuildsConsoleSection">
+        <div class="console-header">
+          <div class="panel-heading">
+            <div class="guild-info-wrap">
+              <button type="button" class="button secondary" id="backToOwnerBtn">← 👑 Volver al Panel</button>
+              <h3 style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em;">🔍 Servidores del Bot</h3>
+            </div>
+            <div class="search-wrap">
+              <input type="text" id="botGuildsSearch" placeholder="🔍 Buscar por nombre o ID..." style="max-width: 300px; margin: 0; background: #000000; border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 10px 14px;">
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel" style="margin-top: 24px;">
+          <div id="botGuildsList" class="bot-guilds-list">
+            <p class="loading-text">Cargando servidores del bot...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Contenedor para ventanita emergente / Toast notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="/app.js?v=6.8"></script>
+  </body>
+</html>
