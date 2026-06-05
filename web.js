@@ -699,20 +699,23 @@ app.put("/api/guilds/:guildId/reaction-roles/:panelId", requireAuth, async (req,
     if (idx === -1) return res.status(404).json({ error: "Panel no encontrado." });
 
     const panel = config.reactionRoles[idx];
-    if (req.body.embed) {
+
+    if (req.body.embed !== undefined) {
       panel.embed = {
-        title: req.body.embed.title || panel.embed.title,
-        description: req.body.embed.description || panel.embed.description,
-        color: req.body.embed.color || panel.embed.color,
-        fields: req.body.embed.fields || panel.embed.fields,
-        imageUrl: req.body.embed.imageUrl || panel.embed.imageUrl || "",
-        thumbnailUrl: req.body.embed.thumbnailUrl || panel.embed.thumbnailUrl || "",
-        footer: req.body.embed.footer || panel.embed.footer || ""
+        title: req.body.embed.title ?? panel.embed.title,
+        description: req.body.embed.description ?? panel.embed.description,
+        color: req.body.embed.color ?? panel.embed.color,
+        fields: req.body.embed.fields ?? panel.embed.fields ?? [],
+        imageUrl: req.body.embed.imageUrl ?? panel.embed.imageUrl ?? "",
+        thumbnailUrl: req.body.embed.thumbnailUrl ?? panel.embed.thumbnailUrl ?? "",
+        footer: req.body.embed.footer ?? panel.embed.footer ?? ""
       };
     }
-    if (req.body.buttons) {
+
+    if (req.body.buttons !== undefined) {
       panel.buttons = req.body.buttons;
     }
+
     if (req.body.channelId !== undefined) {
       panel.channelId = req.body.channelId;
     }

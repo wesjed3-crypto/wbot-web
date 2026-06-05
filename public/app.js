@@ -878,6 +878,7 @@ async function updateReactionPanel(panelId, data) {
     const idx = reactionRolesCache.findIndex(p => p.id === panelId);
     if (idx !== -1) reactionRolesCache[idx] = updated;
     renderReactionPanels();
+    showToast("Panel guardado");
     return updated;
   } catch (error) {
     showToast("Error: " + error.message, "error");
@@ -1202,11 +1203,7 @@ async function saveReactionPanelEditor(panelId) {
     buttons
   };
 
-  const result = await updateReactionPanel(panelId, data);
-  if (result) {
-    renderReactionPanels();
-    showToast("Panel guardado");
-  }
+  await updateReactionPanel(panelId, data);
 }
 
 // ============ TICKET PANELS ============
