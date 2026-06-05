@@ -781,10 +781,20 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
     for (let i = 0; i < buttons.length; i++) {
       const btn = buttons[i];
       if (!btn || !btn.label || !btn.label.trim()) continue;
-      const customId = `role_panel_${panel.id}_${i}`;
+      
+      // Encode role IDs directly in custom_id so the bot doesn't need DB access
+      const roleIds = btn.roleIds || [];
+      const roleSuffix = roleIds.join("_");
+      let customId;
+      if (roleSuffix && `rp_${roleSuffix}`.length <= 100) {
+        customId = `rp_${roleSuffix}`;
+      } else {
+        customId = `role_panel_${panel.id}_${i}`;
+      }
+      
       const component = {
         type: 2,
-        style: btn.style || 1,
+        style: 3,
         label: btn.label.trim().slice(0, 80),
         custom_id: customId
       };
