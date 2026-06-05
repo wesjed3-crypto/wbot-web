@@ -168,6 +168,9 @@ function refreshScrollReveal() {
     element.classList.add("reveal-on-scroll");
     element.classList.remove("in-view");
     element.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 70}ms`);
+
+    const directionClasses = ["from-bottom", "from-left", "from-scale", "from-right"];
+    element.classList.add(directionClasses[index % directionClasses.length]);
   });
 
   if (!("IntersectionObserver" in window)) {

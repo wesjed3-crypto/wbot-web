@@ -957,10 +957,6 @@ textarea {
   display: none !important;
 }
 
-.tab-content {
-  animation: tab-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 @keyframes tab-fade-in {
   from {
     opacity: 0;
@@ -1653,6 +1649,508 @@ textarea {
 .guild-card-btn,
 .panel {
   will-change: transform, opacity;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* Brillo hover en cards */
+.feature-card::after,
+.guild-card-btn::after,
+.bot-guild-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(139, 92, 246, 0.06), transparent 40%);
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.feature-card:hover::after,
+.guild-card-btn:hover::after,
+.bot-guild-card:hover::after {
+  opacity: 1;
+}
+.feature-card,
+.guild-card-btn,
+.bot-guild-card {
+  position: relative;
+}
+
+/* Panel de owner mejorado */
+.owner-panel {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(10, 10, 12, 0.85);
+  border-image: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(16,185,129,0.15)) 1;
+}
+
+.owner-actions .button {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Mini badges premium */
+.mini-badge {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background: rgba(139, 92, 246, 0.06);
+}
+
+/* Input focus glow */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15), 0 0 20px rgba(139, 92, 246, 0.05) !important;
+  outline: none;
+}
+
+/* Terminal de logs premium */
+#botLogs {
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  color: var(--text) !important;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 13px !important;
+  padding: 16px !important;
+  line-height: 1.6 !important;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Gradient text para headings */
+.section-heading h2 {
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-heading p {
+  background: linear-gradient(135deg, var(--text-muted), var(--text-dim));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Feature cards glassmorphism */
+.feature-card {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background: rgba(10, 10, 12, 0.6);
+}
+
+.feature-card:hover {
+  background: rgba(10, 10, 12, 0.8);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05), 0 0 40px rgba(139, 92, 246, 0.03);
+}
+
+/* Dashboard panel */
+.panel {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background: rgba(10, 10, 12, 0.6);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.panel:hover {
+  border-color: rgba(139, 92, 246, 0.15);
+}
+
+/* Nav glassmorphism mejorado */
+.nav {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Toast refinado */
+.toast-message {
+  background: rgba(10, 10, 12, 0.85);
+  border: 1px solid var(--success);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.15), 0 0 40px rgba(0, 0, 0, 0.3);
+}
+.toast-message.error {
+  border-color: var(--danger);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(239, 68, 68, 0.15), 0 0 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Hero shine effect */
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.3), transparent);
+}
+
+/* Auth section glass */
+.nav-actions .button {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Better guild cards */
+.bot-guild-card {
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+.bot-guild-card:hover {
+  border-color: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Console sidebar tab buttons */
+.tab-btn {
+  transition: var(--transition);
+}
+.tab-btn:hover {
+  border-color: rgba(139, 92, 246, 0.2);
+  background: rgba(139, 92, 246, 0.03);
+}
+
+/* Glow accent border on active tab */
+.tab-btn.active {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent), 0 0 20px rgba(139, 92, 246, 0.05);
+}
+
+/* Save button refinado */
+.save-btn {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Loading spinner más elegante */
+.button.loading::after {
+  border-width: 2px;
+  border-color: transparent;
+  border-top-color: currentColor;
+  animation: spin 0.6s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+}
+
+/* Guild card actions */
+.guild-card-btn {
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+.guild-card-btn:hover {
+  border-color: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+.guild-card-btn.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 8px 25px rgba(139, 92, 246, 0.1);
+}
+
+/* Switch grid checkbox accent */
+.switch-grid input[type="checkbox"]:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+/* Conseguir fuente monospace para logs */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ==========================================================
+   ANIMACIONES
+   ========================================================== */
+
+/* Avatar flotante sutil */
+@keyframes avatar-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+
+.hero-avatar-container {
+  animation: hero-rise .8s cubic-bezier(0.16, 1, 0.3, 1) both,
+             avatar-float 5s ease-in-out 1s infinite;
+}
+
+/* Glow pulsante en botón primary CTA */
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+  50% { box-shadow: 0 4px 25px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.15); }
+}
+
+.button.primary {
+  animation: cta-glow 3s ease-in-out infinite;
+}
+.button.primary:hover {
+  animation: cta-glow 1.5s ease-in-out infinite;
+}
+.button.primary:active {
+  animation: none;
+}
+
+/* Subrayado animado en nav links */
+.nav-links a {
+  position: relative;
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-50%);
+}
+.nav-links a:hover::after {
+  width: calc(100% - 32px);
+}
+.nav-links a:active::after {
+  width: calc(100% - 32px);
+  background: var(--text);
+}
+
+/* Shimmer / scan line en feature cards al hover */
+@keyframes card-shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(200%); }
+}
+
+.feature-card {
+  overflow: hidden;
+}
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.04), transparent);
+  transform: translateX(-100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.feature-card:hover::before {
+  animation: card-shimmer 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reveal direction variants */
+.reveal-on-scroll.from-left {
+  transform: translate3d(-60px, 0, 0);
+}
+.reveal-on-scroll.from-right {
+  transform: translate3d(60px, 0, 0);
+}
+.reveal-on-scroll.from-scale {
+  transform: translate3d(0, 0, 0) scale(0.9);
+}
+.reveal-on-scroll.from-left.in-view,
+.reveal-on-scroll.from-right.in-view,
+.reveal-on-scroll.from-scale.in-view {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Badge stagger entrance */
+@keyframes badge-pop {
+  0% { opacity: 0; transform: scale(0.7); }
+  60% { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.badge-row .mini-badge {
+  opacity: 0;
+  animation: badge-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.badge-row .mini-badge:nth-child(1) { animation-delay: 0.5s; }
+.badge-row .mini-badge:nth-child(2) { animation-delay: 0.56s; }
+.badge-row .mini-badge:nth-child(3) { animation-delay: 0.62s; }
+.badge-row .mini-badge:nth-child(4) { animation-delay: 0.68s; }
+
+/* Gradient text animation */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.section-heading h2 {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+.section-heading p {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* Shine sweep en buttons al hover */
+@keyframes button-shine {
+  from { transform: translateX(-100%) rotate(25deg); }
+  to { transform: translateX(200%) rotate(25deg); }
+}
+
+.button.primary,
+.button.secondary,
+.button.danger {
+  position: relative;
+  overflow: hidden;
+}
+.button.primary::before,
+.button.secondary::before,
+.button.danger::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent);
+  transform: translateX(-100%) rotate(25deg);
+  pointer-events: none;
+  transition: none;
+}
+.button.primary:hover::before,
+.button.secondary:hover::before,
+.button.danger:hover::before {
+  animation: button-shine 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Breathing glow en bot state */
+@keyframes breathing-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.2);
+    transform: scale(1.1);
+  }
+}
+
+#botState.online::before {
+  animation: breathing-glow 2.5s ease-in-out infinite !important;
+}
+
+/* Loading skeleton shimmer */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 37%, var(--surface) 63%) !important;
+  background-size: 200px 100% !important;
+  animation: skeleton-shimmer 1.4s ease infinite !important;
+  border-radius: 8px !important;
+  color: transparent !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Guild items en skeleton loading */
+.guild-list.skeleton .guild-item {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 37%, var(--surface) 63%) !important;
+  background-size: 200px 100% !important;
+  animation: skeleton-shimmer 1.4s ease infinite !important;
+  border-color: transparent !important;
+}
+
+/* Smooth brand mark hover */
+.brand:hover .brand-mark {
+  animation: brand-spin 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes brand-spin {
+  from { transform: rotate(0deg) scale(1); }
+  to { transform: rotate(360deg) scale(1.05); }
+}
+
+/* Mini badge hover bounce */
+@keyframes badge-bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  60% { transform: translateY(-3px); }
+}
+
+.mini-badge:hover {
+  animation: badge-bounce 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tab-btn active indicator pulse */
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  animation: tab-indicator 1.5s ease-in-out infinite;
+}
+.tab-btn {
+  position: relative;
+}
+
+@keyframes tab-indicator {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Botón guardar pulse sutil */
+.save-btn {
+  position: relative;
+}
+.save-btn:not(:disabled)::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 1px solid var(--accent);
+  opacity: 0;
+  animation: save-ring 2.5s ease-in-out infinite;
+}
+@keyframes save-ring {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.02); }
+}
+
+/* Feature card tags hover */
+.feature-card span {
+  transition: var(--transition);
+}
+.feature-card:hover span {
+  transform: translateX(4px);
+}
+
+/* Smooth appearance for tab content on switch */
+.tab-content {
+  animation: tab-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Guild card buttons entrance */
+.guild-card-btn {
+  transition: var(--transition);
+  animation: guild-card-appear 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes guild-card-appear {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
