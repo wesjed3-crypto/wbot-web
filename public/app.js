@@ -1037,9 +1037,13 @@ function editReactionPanel(panelId) {
     <label>URL de Thumbnail <input id="rr-thumb" value="${escHtml(embed.thumbnailUrl || "")}" placeholder="https://..."></label>
     <label>Footer <input id="rr-footer" value="${escHtml(embed.footer || "")}" placeholder="by wesjed"></label>
 
-    <label style="flex-direction: row; gap: 8px; margin: 8px 0;">
+    <label class="toggle-wrap">
       <input type="checkbox" id="rr-single-select" ${panel.singleSelect ? "checked" : ""}>
-      <span>🔘 Selección única — el usuario solo puede tener un rol activo de este panel</span>
+      <span class="toggle-track"></span>
+      <span class="toggle-label">
+        <strong>🔘 Selección única</strong>
+        <small>Si hay varios botones, el usuario solo puede tener un rol activo a la vez. Al elegir otro se quita el anterior.</small>
+      </span>
     </label>
 
     <div style="margin-top: 16px;">
