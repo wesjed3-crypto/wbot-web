@@ -1214,6 +1214,26 @@ app.put("/api/guilds/:guildId/config", requireAuth, async (req, res) => {
   }
 });
 
+// Bot sync endpoint — returns all guild configs, protected by API_SECRET
+app.get("/api/bot-sync/configs", async (req, res) => {
+  const secret = req.headers["x-api-secret"];
+  if (!API_SECRET || !secret || secret !== API_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+    const guildIds = await fetchBotGuilds();
+    const result = {};
+    for (const guildId of guildIds) {
+      result[guildId] = await getGuildConfig(guildId);
+    }
+    console.log(`📤 Bot sync: enviadas configs de ${Object.keys(result).length} servidores`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error en bot-sync:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get("/api/admin/bot/guilds", requireAuth, requireOwner, async (req, res) => {
   const now = Date.now();
   if (detailedBotGuildsCache && (now - detailedBotGuildsCacheTime < 300000)) { // 5 minutos de caché
