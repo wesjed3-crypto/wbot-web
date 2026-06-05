@@ -811,12 +811,15 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
       const btn = buttons[i];
       if (!btn || !btn.label || !btn.label.trim()) continue;
       
-      // Encode role IDs directly in custom_id so the bot doesn't need DB access
+      // Encode mode + role IDs directly in custom_id so the bot doesn't need DB access
       const roleIds = btn.roleIds || [];
+      const mode = (btn.mode || "toggle").charAt(0);
+      const modePrefix = mode === "t" ? "" : `${mode}_`;
       const roleSuffix = roleIds.join("_");
       let customId;
-      if (roleSuffix && `rp_${roleSuffix}`.length <= 100) {
-        customId = `rp_${roleSuffix}`;
+      const full = `rp_${modePrefix}${roleSuffix}`;
+      if (roleSuffix && full.length <= 100) {
+        customId = full;
       } else {
         customId = `role_panel_${panel.id}_${i}`;
       }

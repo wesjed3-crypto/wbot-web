@@ -997,6 +997,11 @@ function editReactionPanel(panelId) {
             <option value="3" ${b.style === 3 ? "selected" : ""}>Verde</option>
             <option value="4" ${b.style === 4 ? "selected" : ""}>Rojo</option>
           </select>
+          <select data-rb-mode="${i}" style="flex: 0 0 100px;">
+            <option value="toggle" ${(b.mode || "toggle") === "toggle" ? "selected" : ""}>Alternar</option>
+            <option value="add" ${b.mode === "add" ? "selected" : ""}>Añadir</option>
+            <option value="remove" ${b.mode === "remove" ? "selected" : ""}>Quitar</option>
+          </select>
           <button type="button" class="button danger sm icon" data-remove-btn="${i}">✕</button>
         </div>
         <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 6px;">Roles que asigna este botón:</div>
@@ -1232,6 +1237,7 @@ async function saveReactionPanelEditor(panelId) {
     const labelInput = row.querySelector("[data-rb-label]");
     const emojiInput = row.querySelector("[data-rb-emoji]");
     const styleSelect = row.querySelector("[data-rb-style]");
+    const modeSelect = row.querySelector("[data-rb-mode]");
     if (!labelInput || !labelInput.value) return;
     const roleIds = [];
     row.querySelectorAll("[data-rb-role]").forEach(sel => {
@@ -1241,6 +1247,7 @@ async function saveReactionPanelEditor(panelId) {
       label: labelInput.value,
       emoji: emojiInput?.value || "",
       style: parseInt(styleSelect?.value || "1"),
+      mode: modeSelect?.value || "toggle",
       roleIds
     });
   });
