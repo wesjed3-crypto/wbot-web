@@ -831,6 +831,7 @@ function renderReactionPanels() {
           <span style="display: block; font-size: 12px; color: var(--text-dim); margin-top: 4px;">
             ${sent ? `✅ Enviado · <code>#${panel.channelId}</code>` : "📝 Borrador"}
             · ${btnCount} botón(es) · ${totalRoles} rol(es)
+            ${panel.singleSelect ? "· 🔘 Selección única" : ""}
           </span>
         </div>
         <div style="display: flex; gap: 6px;">
@@ -1035,6 +1036,11 @@ function editReactionPanel(panelId) {
     <label>URL de Imagen <input id="rr-image" value="${escHtml(embed.imageUrl || "")}" placeholder="https://..."></label>
     <label>URL de Thumbnail <input id="rr-thumb" value="${escHtml(embed.thumbnailUrl || "")}" placeholder="https://..."></label>
     <label>Footer <input id="rr-footer" value="${escHtml(embed.footer || "")}" placeholder="by wesjed"></label>
+
+    <label style="flex-direction: row; gap: 8px; margin: 8px 0;">
+      <input type="checkbox" id="rr-single-select" ${panel.singleSelect ? "checked" : ""}>
+      <span>🔘 Selección única — el usuario solo puede tener un rol activo de este panel</span>
+    </label>
 
     <div style="margin-top: 16px;">
       <strong style="font-size: 14px;">📋 Fields</strong>
@@ -1253,6 +1259,7 @@ async function saveReactionPanelEditor(panelId) {
   });
 
   const data = {
+    singleSelect: editor.querySelector("#rr-single-select")?.checked || false,
     embed: {
       title: editor.querySelector("#rr-title")?.value || "",
       description: editor.querySelector("#rr-desc")?.value || "",

@@ -722,6 +722,7 @@ app.post("/api/guilds/:guildId/reaction-roles", requireAuth, async (req, res) =>
       id: generateId(),
       channelId: "",
       messageId: "",
+      singleSelect: false,
       embed: {
         title: req.body.embed?.title || "Role Panel",
         description: req.body.embed?.description || "Haz clic en un botón para obtener tus roles.",
@@ -769,6 +770,10 @@ app.put("/api/guilds/:guildId/reaction-roles/:panelId", requireAuth, async (req,
 
     if (req.body.channelId !== undefined) {
       panel.channelId = req.body.channelId;
+    }
+
+    if (req.body.singleSelect !== undefined) {
+      panel.singleSelect = Boolean(req.body.singleSelect);
     }
 
     const saved = await setGuildConfig(req.params.guildId, config);
@@ -838,8 +843,9 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
       const mode = (btn.mode || "toggle").charAt(0);
       const modePrefix = mode === "t" ? "" : `${mode}_`;
       const roleSuffix = roleIds.join("_");
+      const prefix = panel.singleSelect ? "rps_" : "rp_";
       let customId;
-      const full = `rp_${modePrefix}${roleSuffix}`;
+      const full = `${prefix}${modePrefix}${roleSuffix}`;
       if (roleSuffix && full.length <= 100) {
         customId = full;
       } else {
