@@ -766,7 +766,8 @@ function renderReactionPanels() {
     card.style.marginBottom = "12px";
 
     const sent = panel.messageId && panel.channelId;
-    const reactCount = panel.reactions?.length || 0;
+    const btnCount = panel.buttons?.length || 0;
+    const totalRoles = panel.buttons?.reduce((sum, b) => sum + (b.roleIds?.length || 0), 0) || 0;
 
     card.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -774,7 +775,7 @@ function renderReactionPanels() {
           <strong style="font-size: 16px;">${panel.embed?.title || "Sin título"}</strong>
           <span style="display: block; font-size: 12px; color: var(--text-dim); margin-top: 4px;">
             ${sent ? `✅ Enviado · <code>#${panel.channelId}</code>` : "📝 Borrador"}
-            · ${reactCount} reacción(es)
+            · ${btnCount} botón(es) · ${totalRoles} rol(es)
           </span>
         </div>
         <div style="display: flex; gap: 6px;">
@@ -831,15 +832,15 @@ async function createReactionPanel() {
   if (!state.selectedGuild) return;
   const defaultPanel = {
     embed: {
-      title: "Reaction Roles",
-      description: "Reacciona para obtener un rol.",
+      title: "Role Panel",
+      description: "Haz clic en un botón para obtener tus roles.",
       color: "#8b5cf6",
       fields: [],
       imageUrl: "",
       thumbnailUrl: "",
       footer: ""
     },
-    reactions: []
+    buttons: []
   };
   try {
     const panel = await api(`/api/guilds/${state.selectedGuild.id}/reaction-roles`, {
@@ -911,7 +912,7 @@ function editReactionPanel(panelId) {
   formContainer.id = `editor-${panelId}`;
 
   const embed = panel.embed || {};
-  const reactions = panel.reactions || [];
+  const buttons = panel.buttons || [];
 
   let fieldsHtml = "";
   (embed.fields || []).forEach((f, i) => {
@@ -926,17 +927,38 @@ function editReactionPanel(panelId) {
       </div>`;
   });
 
-  let reactionsHtml = "";
-  reactions.forEach((r, i) => {
-    reactionsHtml += `
-      <div class="rr-reaction-row" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: end;">
-        <input data-rr-emoji="${i}" value="${escHtml(r.emoji)}" placeholder="Emoji (✅ o <:name:id>)" style="flex: 1;">
-        <select data-rr-role="${i}" style="flex: 2;">
-          <option value="">Rol...</option>
-        </select>
-        <button type="button" class="button danger sm icon" data-remove-rr="${i}">✕</button>
+  let buttonsHtml = "";
+  buttons.forEach((b, i) => {
+    const roleIds = b.roleIds || [];
+    buttonsHtml += `
+      <div class="rr-btn-row" style="border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 8px; align-items: end; flex-wrap: wrap;">
+          <input data-rb-label="${i}" value="${escHtml(b.label)}" placeholder="Etiqueta" style="flex: 1; min-width: 100px;">
+          <input data-rb-emoji="${i}" value="${escHtml(b.emoji || "")}" placeholder="🎫" style="flex: 0 0 50px;">
+          <select data-rb-style="${i}" style="flex: 0 0 110px;">
+            <option value="1" ${(b.style || 1) === 1 ? "selected" : ""}>Azul</option>
+            <option value="2" ${b.style === 2 ? "selected" : ""}>Gris</option>
+            <option value="3" ${b.style === 3 ? "selected" : ""}>Verde</option>
+            <option value="4" ${b.style === 4 ? "selected" : ""}>Rojo</option>
+          </select>
+          <button type="button" class="button danger sm icon" data-remove-btn="${i}">✕</button>
+        </div>
+        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 6px;">Roles que asigna este botón:</div>
+        <div class="rb-roles-list" data-rb-roles-list="${i}">
+          ${roleIds.map((rid, ri) => `
+            <div class="rb-role-row" style="display: flex; gap: 6px; margin-bottom: 4px; align-items: center;">
+              <select data-rb-role="${i}-${ri}" style="flex: 1;">
+                <option value="">Rol...</option>
+              </select>
+              <button type="button" class="button danger sm icon" data-remove-rb-role="${i}-${ri}">✕</button>
+            </div>
+          `).join("")}
+        </div>
+        <button type="button" class="button secondary sm add" data-add-rb-role="${i}">➕ Añadir Rol</button>
       </div>`;
   });
+
+  const roleData = rolesCache[state.selectedGuild?.id] || [];
 
   formContainer.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -960,38 +982,42 @@ function editReactionPanel(panelId) {
     </div>
 
     <div style="margin-top: 16px;">
-      <strong style="font-size: 14px;">🎭 Reacciones</strong>
-      <p style="font-size: 12px; color: var(--text-dim); margin: 4px 0 8px;">Emoji + Rol que se asignará al reaccionar.</p>
-      <div id="rr-reactions-list" style="margin-top: 8px;">${reactionsHtml}</div>
-      <button type="button" class="button secondary sm add" id="addRrBtn">➕ Añadir Reacción</button>
+      <strong style="font-size: 14px;">🔘 Botones</strong>
+      <p style="font-size: 12px; color: var(--text-dim); margin: 4px 0 8px;">Cada botón asigna uno o varios roles al hacer clic. Puedes elegir estilo, etiqueta y emoji.</p>
+      <div id="rr-buttons-list" style="margin-top: 8px;">${buttonsHtml}</div>
+      <button type="button" class="button secondary sm add" id="addBtnBtn">➕ Añadir Botón</button>
     </div>
   `;
 
-  // Insert editor at top of list
   if (listEl.firstChild) {
     listEl.insertBefore(formContainer, listEl.firstChild);
   } else {
     listEl.appendChild(formContainer);
   }
 
-  // Populate role selects in reactions
-  const roleData = rolesCache[state.selectedGuild?.id] || [];
-  formContainer.querySelectorAll("[data-rr-role]").forEach(sel => {
-    const idx = parseInt(sel.dataset.rrRole);
-    sel.innerHTML = '<option value="">Rol...</option>';
-    roleData.forEach(r => {
-      const opt = document.createElement("option");
-      opt.value = r.id;
-      opt.textContent = `@${r.name}`;
-      sel.appendChild(opt);
+  // Populate role selects for each button
+  function populateRoleSelects(container) {
+    container.querySelectorAll("[data-rb-role]").forEach(sel => {
+      const key = sel.dataset.rbRole;
+      const [bi, ri] = key.split("-").map(Number);
+      sel.innerHTML = '<option value="">Rol...</option>';
+      roleData.forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r.id;
+        opt.textContent = `@${r.name}`;
+        sel.appendChild(opt);
+      });
+      const btn = buttons[bi];
+      if (btn && btn.roleIds && btn.roleIds[ri]) sel.value = btn.roleIds[ri];
     });
-    if (reactions[idx]?.roleId) sel.value = reactions[idx].roleId;
-  });
+  }
+  populateRoleSelects(formContainer);
 
   // Event listeners
   formContainer.querySelector(`[data-close-editor="${panelId}"]`)?.addEventListener("click", () => renderReactionPanels());
   formContainer.querySelector(`[data-save-editor="${panelId}"]`)?.addEventListener("click", () => saveReactionPanelEditor(panelId));
 
+  // Add field
   formContainer.querySelector("#addFieldBtn")?.addEventListener("click", () => {
     const fieldList = formContainer.querySelector("#rr-fields-list");
     const idx = fieldList.querySelectorAll(".rr-field-row").length;
@@ -1009,33 +1035,115 @@ function editReactionPanel(panelId) {
     fieldList.appendChild(row);
   });
 
-  formContainer.querySelector("#addRrBtn")?.addEventListener("click", () => {
-    const rrList = formContainer.querySelector("#rr-reactions-list");
-    const idx = rrList.querySelectorAll(".rr-reaction-row").length;
+  // Add button (with single role row)
+  formContainer.querySelector("#addBtnBtn")?.addEventListener("click", () => {
+    const btnList = formContainer.querySelector("#rr-buttons-list");
+    const idx = btnList.querySelectorAll(".rr-btn-row").length;
     const row = document.createElement("div");
-    row.className = "rr-reaction-row";
-    row.style.cssText = "display: flex; gap: 8px; margin-bottom: 8px; align-items: end;";
+    row.className = "rr-btn-row";
+    row.style.cssText = "border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px;";
     row.innerHTML = `
-      <input data-rr-emoji="${idx}" placeholder="Emoji (✅ o <:name:id>)" style="flex: 1;">
-      <select data-rr-role="${idx}" style="flex: 2;"><option value="">Rol...</option></select>
-      <button type="button" class="button danger sm icon" data-remove-rr="${idx}">✕</button>`;
-    const roleSel = row.querySelector(`[data-rr-role="${idx}"]`);
+      <div style="display: flex; gap: 8px; margin-bottom: 8px; align-items: end; flex-wrap: wrap;">
+        <input data-rb-label="${idx}" placeholder="Etiqueta" style="flex: 1; min-width: 100px;">
+        <input data-rb-emoji="${idx}" placeholder="🎫" style="flex: 0 0 50px;">
+        <select data-rb-style="${idx}" style="flex: 0 0 110px;">
+          <option value="1">Azul</option>
+          <option value="2">Gris</option>
+          <option value="3">Verde</option>
+          <option value="4">Rojo</option>
+        </select>
+        <button type="button" class="button danger sm icon" data-remove-btn="${idx}">✕</button>
+      </div>
+      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 6px;">Roles que asigna este botón:</div>
+      <div class="rb-roles-list" data-rb-roles-list="${idx}">
+        <div class="rb-role-row" style="display: flex; gap: 6px; margin-bottom: 4px; align-items: center;">
+          <select data-rb-role="${idx}-0" style="flex: 1;"><option value="">Rol...</option></select>
+          <button type="button" class="button danger sm icon" data-remove-rb-role="${idx}-0">✕</button>
+        </div>
+      </div>
+      <button type="button" class="button secondary sm add" data-add-rb-role="${idx}">➕ Añadir Rol</button>
+    `;
+    // Populate the first role select
+    const firstSel = row.querySelector(`[data-rb-role="${idx}-0"]`);
     roleData.forEach(r => {
       const opt = document.createElement("option");
       opt.value = r.id;
       opt.textContent = `@${r.name}`;
-      roleSel.appendChild(opt);
+      firstSel.appendChild(opt);
     });
-    row.querySelector(`[data-remove-rr="${idx}"]`).addEventListener("click", () => row.remove());
-    rrList.appendChild(row);
+    // Remove button event
+    row.querySelector(`[data-remove-btn="${idx}"]`).addEventListener("click", () => row.remove());
+    // Remove role event
+    row.querySelector(`[data-remove-rb-role="${idx}-0"]`).addEventListener("click", function() {
+      this.closest(".rb-role-row").remove();
+    });
+    // Add role event
+    row.querySelector(`[data-add-rb-role="${idx}"]`).addEventListener("click", function() {
+      const rolesList = this.closest(".rr-btn-row").querySelector(".rb-roles-list");
+      const ri = rolesList.querySelectorAll(".rb-role-row").length;
+      const roleRow = document.createElement("div");
+      roleRow.className = "rb-role-row";
+      roleRow.style.cssText = "display: flex; gap: 6px; margin-bottom: 4px; align-items: center;";
+      roleRow.innerHTML = `
+        <select data-rb-role="${idx}-${ri}" style="flex: 1;"><option value="">Rol...</option></select>
+        <button type="button" class="button danger sm icon" data-remove-rb-role="${idx}-${ri}">✕</button>`;
+      const roleSel = roleRow.querySelector(`[data-rb-role="${idx}-${ri}"]`);
+      roleData.forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r.id;
+        opt.textContent = `@${r.name}`;
+        roleSel.appendChild(opt);
+      });
+      roleRow.querySelector(`[data-remove-rb-role="${idx}-${ri}"]`).addEventListener("click", function() {
+        this.closest(".rb-role-row").remove();
+      });
+      rolesList.appendChild(roleRow);
+    });
+    btnList.appendChild(row);
   });
 
-  // Remove field/reaction listeners
+  // Remove field listeners
   formContainer.querySelectorAll("[data-remove-field]").forEach(btn => {
     btn.addEventListener("click", () => btn.closest(".rr-field-row").remove());
   });
-  formContainer.querySelectorAll("[data-remove-rr]").forEach(btn => {
-    btn.addEventListener("click", () => btn.closest(".rr-reaction-row").remove());
+
+  // Existing button remove listeners
+  formContainer.querySelectorAll("[data-remove-btn]").forEach(btn => {
+    btn.addEventListener("click", () => btn.closest(".rr-btn-row").remove());
+  });
+
+  // Existing role remove listeners
+  formContainer.querySelectorAll("[data-remove-rb-role]").forEach(btn => {
+    btn.addEventListener("click", function() {
+      this.closest(".rb-role-row").remove();
+    });
+  });
+
+  // Add role to existing buttons
+  formContainer.querySelectorAll("[data-add-rb-role]").forEach(btn => {
+    btn.addEventListener("click", function() {
+      const btnRow = this.closest(".rr-btn-row");
+      const rolesList = btnRow.querySelector(".rb-roles-list");
+      const bi = parseInt(btnRow.querySelector("[data-rb-label]")?.dataset.rbLabel);
+      const ri = rolesList.querySelectorAll(".rb-role-row").length;
+      const roleRow = document.createElement("div");
+      roleRow.className = "rb-role-row";
+      roleRow.style.cssText = "display: flex; gap: 6px; margin-bottom: 4px; align-items: center;";
+      roleRow.innerHTML = `
+        <select data-rb-role="${bi}-${ri}" style="flex: 1;"><option value="">Rol...</option></select>
+        <button type="button" class="button danger sm icon" data-remove-rb-role="${bi}-${ri}">✕</button>`;
+      const roleSel = roleRow.querySelector(`[data-rb-role="${bi}-${ri}"]`);
+      roleData.forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r.id;
+        opt.textContent = `@${r.name}`;
+        roleSel.appendChild(opt);
+      });
+      roleRow.querySelector(`[data-remove-rb-role="${bi}-${ri}"]`).addEventListener("click", function() {
+        this.closest(".rb-role-row").remove();
+      });
+      rolesList.appendChild(roleRow);
+    });
   });
 }
 
@@ -1063,13 +1171,22 @@ async function saveReactionPanelEditor(panelId) {
     }
   });
 
-  const reactions = [];
-  editor.querySelectorAll(".rr-reaction-row").forEach(row => {
-    const emojiInput = row.querySelector("[data-rr-emoji]");
-    const roleSelect = row.querySelector("[data-rr-role]");
-    if (emojiInput && roleSelect && emojiInput.value && roleSelect.value) {
-      reactions.push({ emoji: emojiInput.value, roleId: roleSelect.value });
-    }
+  const buttons = [];
+  editor.querySelectorAll(".rr-btn-row").forEach(row => {
+    const labelInput = row.querySelector("[data-rb-label]");
+    const emojiInput = row.querySelector("[data-rb-emoji]");
+    const styleSelect = row.querySelector("[data-rb-style]");
+    if (!labelInput || !labelInput.value) return;
+    const roleIds = [];
+    row.querySelectorAll("[data-rb-role]").forEach(sel => {
+      if (sel.value) roleIds.push(sel.value);
+    });
+    buttons.push({
+      label: labelInput.value,
+      emoji: emojiInput?.value || "",
+      style: parseInt(styleSelect?.value || "1"),
+      roleIds
+    });
   });
 
   const data = {
@@ -1082,7 +1199,7 @@ async function saveReactionPanelEditor(panelId) {
       thumbnailUrl: editor.querySelector("#rr-thumb")?.value || "",
       footer: editor.querySelector("#rr-footer")?.value || ""
     },
-    reactions
+    buttons
   };
 
   const result = await updateReactionPanel(panelId, data);

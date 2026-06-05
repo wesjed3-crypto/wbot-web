@@ -672,15 +672,15 @@ app.post("/api/guilds/:guildId/reaction-roles", requireAuth, async (req, res) =>
       channelId: "",
       messageId: "",
       embed: {
-        title: req.body.embed?.title || "Reaction Roles",
-        description: req.body.embed?.description || "Reacciona para obtener un rol.",
+        title: req.body.embed?.title || "Role Panel",
+        description: req.body.embed?.description || "Haz clic en un botón para obtener tus roles.",
         color: req.body.embed?.color || "#8b5cf6",
         fields: req.body.embed?.fields || [],
         imageUrl: req.body.embed?.imageUrl || "",
         thumbnailUrl: req.body.embed?.thumbnailUrl || "",
         footer: req.body.embed?.footer || ""
       },
-      reactions: req.body.reactions || []
+      buttons: req.body.buttons || []
     };
     config.reactionRoles = [...(config.reactionRoles || []), panel];
     const saved = await setGuildConfig(req.params.guildId, config);
@@ -710,8 +710,8 @@ app.put("/api/guilds/:guildId/reaction-roles/:panelId", requireAuth, async (req,
         footer: req.body.embed.footer || panel.embed.footer || ""
       };
     }
-    if (req.body.reactions) {
-      panel.reactions = req.body.reactions;
+    if (req.body.buttons) {
+      panel.buttons = req.body.buttons;
     }
     if (req.body.channelId !== undefined) {
       panel.channelId = req.body.channelId;
@@ -749,7 +749,7 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
     if (!panel.channelId) return res.status(400).json({ error: "El panel no tiene un canal asignado." });
 
     const embedPayload = {
-      title: panel.embed.title?.slice(0, 256) || "Reaction Roles",
+      title: panel.embed.title?.slice(0, 256) || "Role Panel",
       description: panel.embed.description?.slice(0, 4096) || "",
       color: parseInt(panel.embed.color?.replace("#", "") || "8b5cf6", 16),
       timestamp: new Date().toISOString(),
@@ -766,6 +766,38 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
       }));
     }
 
+    // Build action rows with buttons (max 5 per row)
+    const components = [];
+    const buttons = panel.buttons || [];
+    const hasValidButtons = buttons.some(b => b && b.label && b.label.trim());
+    if (!hasValidButtons) {
+      return res.status(400).json({ error: "El panel no tiene botones válidos. Añade al menos un botón con etiqueta." });
+    }
+    let row = { type: 1, components: [] };
+    let count = 0;
+    for (let i = 0; i < buttons.length; i++) {
+      const btn = buttons[i];
+      if (!btn || !btn.label || !btn.label.trim()) continue;
+      const customId = `role_panel_${panel.id}_${i}`;
+      const component = {
+        type: 2,
+        style: btn.style || 1,
+        label: btn.label.trim().slice(0, 80),
+        custom_id: customId
+      };
+      if (btn.emoji && btn.emoji.trim()) {
+        const e = btn.emoji.trim();
+        component.emoji = e.match(/^<a?:.+?:\d+>$/) ? { name: e } : { name: e };
+      }
+      row.components.push(component);
+      count++;
+      if (count % 5 === 0) {
+        components.push(row);
+        row = { type: 1, components: [] };
+      }
+    }
+    if (row.components.length > 0) components.push(row);
+
     let isUpdate = !!(panel.messageId && panel.channelId);
     if (isUpdate) {
       const checkRes = await fetch(`https://discord.com/api/v10/channels/${panel.channelId}/messages/${panel.messageId}`, {
@@ -780,7 +812,7 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
     const msgRes = await fetch(url, {
       method: isUpdate ? "PATCH" : "POST",
       headers: { Authorization: `Bot ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ embeds: [embedPayload] })
+      body: JSON.stringify({ embeds: [embedPayload], components })
     });
 
     if (!msgRes.ok) {
@@ -970,15 +1002,6 @@ app.post("/api/guilds/:guildId/ticket-panels/:panelId/send", requireAuth, async 
 
     const msg = await msgRes.json();
     panel.messageId = msg.id;
-
-    for (const rr of (panel.reactions || [])) {
-      const emoji = rr.emoji;
-      const encoded = encodeURIComponent(emoji);
-      await fetch(`https://discord.com/api/v10/channels/${panel.channelId}/messages/${msg.id}/reactions/${encoded}/@me`, {
-        method: "PUT",
-        headers: { Authorization: `Bot ${token}` }
-      }).catch(err => console.error(`Error adding reaction ${emoji}:`, err));
-    }
 
     const saved = await setGuildConfig(req.params.guildId, config);
     const savedPanel = saved.ticketPanels?.find(p => p.id === panel.id);
