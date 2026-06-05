@@ -105,7 +105,7 @@ const defaultGuildConfig = {
     enabled: false,
     categoryId: "",
     supportRoleId: "",
-    welcomeMessage: "Hola {user}. Describe tu problema y el equipo de soporte te atenderá lo antes posible."
+    welcomeMessage: "Hola {user}. Describe tu problema y el equipo de soporte te atenderá lo antes posible.\n🔗 Servidor de soporte: https://discord.gg/DqATTHg5X7"
   },
 
   reactionRoles: [],
