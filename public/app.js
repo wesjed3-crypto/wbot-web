@@ -405,6 +405,7 @@ async function loadGuildChannelsAndRoles(guildId) {
     populateSelect(form.farewellChannelId, channelData.textChannels);
     populateSelect(form.inviteLoggerChannelId, channelData.textChannels);
     populateSelect(form.boostLoggerChannelId, channelData.textChannels);
+    populateSelect(form.levelSystemChannelId, channelData.textChannels);
     populateRoleSelect(form.mutedRoleId, roleData);
   } catch (error) {
     console.error("Error loading channels/roles:", error);
@@ -491,6 +492,16 @@ function fillForm(config) {
   form.boostLoggerTitle.value = config.boostLogger?.title || "";
   form.boostLoggerDescription.value = config.boostLogger?.description || "";
   form.boostLoggerColor.value = config.boostLogger?.color || "#f97316";
+
+  // Level System
+  form.levelSystemEnabled.checked = Boolean(config.levelSystem?.enabled);
+  form.levelSystemEmbed.checked = Boolean(config.levelSystem?.embedEnabled);
+  form.levelSystemChannelId.value = config.levelSystem?.channelId || "";
+  form.levelSystemTitle.value = config.levelSystem?.title || "";
+  form.levelSystemDescription.value = config.levelSystem?.description || "";
+  form.levelSystemColor.value = config.levelSystem?.color || "#8b5cf6";
+  form.levelSystemXpPerMessage.value = config.levelSystem?.xpPerMessage || 20;
+  form.levelSystemCooldown.value = config.levelSystem?.cooldown || 60;
 }
 
 function renderPunishmentWarnsTable(list) {
@@ -716,6 +727,16 @@ function readForm() {
       title: form.boostLoggerTitle.value,
       description: form.boostLoggerDescription.value,
       color: form.boostLoggerColor.value
+    },
+    levelSystem: {
+      enabled: form.levelSystemEnabled.checked,
+      channelId: form.levelSystemChannelId.value,
+      embedEnabled: form.levelSystemEmbed.checked,
+      title: form.levelSystemTitle.value,
+      description: form.levelSystemDescription.value,
+      color: form.levelSystemColor.value,
+      xpPerMessage: Number(form.levelSystemXpPerMessage.value),
+      cooldown: Number(form.levelSystemCooldown.value)
     }
   };
 }

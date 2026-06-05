@@ -128,6 +128,17 @@ const defaultGuildConfig = {
     title: "🚀 Nuevo boost",
     description: "{user} ha mejorado el servidor **{server}** con un boost.\n¡Gracias por el apoyo {user}! 🎉",
     color: "#f97316"
+  },
+
+  levelSystem: {
+    enabled: false,
+    channelId: "",
+    embedEnabled: true,
+    title: "🎉 ¡{user} ha subido al nivel {level}!",
+    description: "¡Felicidades {user}! Has alcanzado el **nivel {level}** en {server}.\nSigue escribiendo para seguir subiendo de nivel. 🚀",
+    color: "#8b5cf6",
+    xpPerMessage: 20,
+    cooldown: 60
   }
 };
 
@@ -1157,6 +1168,18 @@ app.put("/api/guilds/:guildId/config", requireAuth, async (req, res) => {
       title: String(incoming.boostLogger?.title || defaultGuildConfig.boostLogger.title).trim(),
       description: String(incoming.boostLogger?.description || "").trim(),
       color: String(incoming.boostLogger?.color || "#f97316").trim()
+    };
+
+    // Level System
+    guildConfig.levelSystem = {
+      enabled: Boolean(incoming.levelSystem?.enabled),
+      channelId: String(incoming.levelSystem?.channelId || "").trim(),
+      embedEnabled: Boolean(incoming.levelSystem?.embedEnabled),
+      title: String(incoming.levelSystem?.title || defaultGuildConfig.levelSystem.title).trim(),
+      description: String(incoming.levelSystem?.description || "").trim(),
+      color: String(incoming.levelSystem?.color || "#8b5cf6").trim(),
+      xpPerMessage: Math.max(1, Math.min(100, Number(incoming.levelSystem?.xpPerMessage || 20))),
+      cooldown: Math.max(10, Math.min(300, Number(incoming.levelSystem?.cooldown || 60)))
     };
 
     res.json(await setGuildConfig(req.params.guildId, guildConfig));

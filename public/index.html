@@ -160,6 +160,7 @@
             <button type="button" class="tab-btn" data-tab="tab-tickets">🎫 Tickets</button>
             <button type="button" class="tab-btn" data-tab="tab-invites">📨 Invitaciones</button>
             <button type="button" class="tab-btn" data-tab="tab-boosts">🚀 Boosts</button>
+            <button type="button" class="tab-btn" data-tab="tab-levels">⭐ Niveles</button>
             <button type="button" class="tab-btn" data-tab="tab-support">✉️ Soporte</button>
           </aside>
 
@@ -393,7 +394,25 @@
               </div>
             </div>
 
-            <!-- Pestaña 10: Soporte del Creador -->
+            <!-- Pestaña 10: Level System -->
+            <div class="tab-content hidden" id="tab-levels">
+              <div class="panel">
+                <h3>⭐ Sistema de Niveles</h3>
+                <p class="tab-desc">Los usuarios ganan XP por cada mensaje que envían. Al subir de nivel, se envía un embed al canal configurado.</p>
+                <div class="switch-grid">
+                  <label><input type="checkbox" name="levelSystemEnabled"> Activar Niveles</label>
+                  <label><input type="checkbox" name="levelSystemEmbed"> Embed Habilitado</label>
+                </div>
+                <label>Canal de niveles <select name="levelSystemChannelId"><option value="">Seleccionar...</option></select></label>
+                <label>Título del embed <input name="levelSystemTitle" placeholder="🎉 ¡{user} ha subido al nivel {level}!"></label>
+                <label>Descripción <textarea name="levelSystemDescription" rows="3" placeholder="{user} ha alcanzado el nivel {level}..."></textarea></label>
+                <label>Color (HEX) <input name="levelSystemColor" placeholder="#8b5cf6"></label>
+                <label>XP por mensaje <input name="levelSystemXpPerMessage" type="number" min="1" max="100" placeholder="20"></label>
+                <label>Cooldown entre mensajes (segundos) <input name="levelSystemCooldown" type="number" min="10" max="300" placeholder="60"></label>
+              </div>
+            </div>
+
+            <!-- Pestaña 11: Soporte del Creador -->
             <div class="tab-content hidden" id="tab-support">
               <div class="panel support-card-panel">
                 <h3>✉️ Soporte & Contacto</h3>
