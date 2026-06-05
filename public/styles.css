@@ -2138,9 +2138,44 @@ textarea:focus {
   transform: translateX(4px);
 }
 
-/* Smooth appearance for tab content on switch */
+/* Transiciones de pestañas */
 .tab-content {
   animation: tab-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tab-content.tab-exit {
+  animation: tab-exit 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes tab-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+/* Transición de secciones del dashboard (entrar/salir de consola) */
+.dashboard-section .session-row,
+.dashboard-section #serverSelectorContainer {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.dashboard-section .session-row.hiding,
+.dashboard-section #serverSelectorContainer.hiding {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+.dashboard-section .session-row.showing,
+.dashboard-section #serverSelectorContainer.showing {
+  animation: tab-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Dashboard form entrance */
+#configForm {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#configForm.showing {
+  animation: tab-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+#configForm.hiding {
+  animation: tab-exit 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Guild card buttons entrance */

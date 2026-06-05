@@ -504,8 +504,19 @@ function switchTab(tabId) {
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.tab === tabId);
   });
-  document.querySelectorAll(".tab-content").forEach(content => {
-    content.classList.toggle("hidden", content.id !== tabId);
+
+  const oldTab = document.querySelector(".tab-content:not(.hidden)");
+
+  document.querySelectorAll(".tab-content").forEach(el => {
+    if (el.id === tabId) {
+      el.classList.remove("hidden");
+    } else if (el === oldTab) {
+      el.classList.add("tab-exit");
+      setTimeout(() => {
+        el.classList.add("hidden");
+        el.classList.remove("tab-exit");
+      }, 260);
+    }
   });
 }
 
@@ -514,24 +525,38 @@ function exitConsoleMode() {
   state.selectedGuild = null;
   renderGuilds();
   
-  // Ocultar consolas
-  elements.configForm.classList.add("hidden");
-  
   if (state.consoleSource === "owner") {
+    elements.configForm.classList.add("hiding");
+    setTimeout(() => {
+      elements.configForm.classList.add("hidden");
+      elements.configForm.classList.remove("hiding");
+    }, 260);
     elements.botGuildsConsoleSection?.classList.remove("hidden");
-  } else {
+    refreshScrollReveal();
+    return;
+  }
+  
+  elements.configForm.classList.add("hiding");
+  setTimeout(() => {
+    elements.configForm.classList.add("hidden");
+    elements.configForm.classList.remove("hiding");
+    
     elements.botGuildsConsoleSection?.classList.add("hidden");
-    // Restaurar secciones principales
     document.querySelector("#home")?.classList.remove("hidden");
     document.querySelector("#features")?.classList.remove("hidden");
-    document.querySelector(".session-row")?.classList.remove("hidden");
-    document.querySelector("#serverSelectorContainer")?.classList.remove("hidden");
     document.querySelector(".section-heading.compact")?.classList.remove("hidden");
+    
+    const sessionRow = document.querySelector(".session-row");
+    const selector = document.querySelector("#serverSelectorContainer");
+    if (sessionRow) { sessionRow.classList.remove("hidden"); sessionRow.classList.add("showing"); }
+    if (selector) { selector.classList.remove("hidden"); selector.classList.add("showing"); }
     
     if (state.isOwner) {
       document.querySelector("#ownerPanel")?.classList.remove("hidden");
     }
-  }
+    
+    refreshScrollReveal();
+  }, 260);
   
   setNotice(state.guilds.length ? "Elige un servidor para configurarlo." : "No se encontraron servidores con wbot. ¡Invítalo primero con el botón de arriba!");
 }
@@ -561,18 +586,29 @@ async function selectGuild(guild, source = "user") {
   
   elements.selectedGuild.textContent = guild.name;
   
-  // Ocultar landing
-  document.querySelector("#home")?.classList.add("hidden");
-  document.querySelector("#features")?.classList.add("hidden");
-  document.querySelector("#ownerPanel")?.classList.add("hidden");
-  document.querySelector(".session-row")?.classList.add("hidden");
-  document.querySelector("#serverSelectorContainer")?.classList.add("hidden");
-  document.querySelector(".section-heading.compact")?.classList.add("hidden");
-  elements.botGuildsConsoleSection?.classList.add("hidden");
+  // Ocultar landing con animación
+  const sessionRow = document.querySelector(".session-row");
+  const selector = document.querySelector("#serverSelectorContainer");
   
-  // Mostrar formulario de consola y pestaña por defecto
-  elements.configForm.classList.remove("hidden");
-  switchTab("tab-general");
+  if (sessionRow) sessionRow.classList.add("hiding");
+  if (selector) selector.classList.add("hiding");
+  
+  setTimeout(() => {
+    document.querySelector("#home")?.classList.add("hidden");
+    document.querySelector("#features")?.classList.add("hidden");
+    document.querySelector("#ownerPanel")?.classList.add("hidden");
+    if (sessionRow) { sessionRow.classList.add("hidden"); sessionRow.classList.remove("hiding"); }
+    if (selector) { selector.classList.add("hidden"); selector.classList.remove("hiding"); }
+    document.querySelector(".section-heading.compact")?.classList.add("hidden");
+    elements.botGuildsConsoleSection?.classList.add("hidden");
+  }, 200);
+  
+  // Mostrar formulario de consola y pestaña por defecto  
+  setTimeout(() => {
+    elements.configForm.classList.remove("hidden");
+    elements.configForm.classList.add("showing");
+    switchTab("tab-general");
+  }, 100);
   
   // Resetear el color del botón guardar cambios a verde (sin cambios)
   elements.saveConfigBtn?.classList.remove("changed");
