@@ -971,7 +971,10 @@ app.post("/api/guilds/:guildId/ticket-panels/:panelId/send", requireAuth, async 
     for (let i = 0; i < buttons.length; i++) {
       const btn = buttons[i];
       if (!btn || !btn.label || !btn.label.trim()) continue;
-      const customId = `ticket_panel_${panel.id}_${i}`;
+      // tp_<categoryId>_<supportRoleId> — self-contained, no DB needed
+      const catId = btn.categoryId || "";
+      const supId = btn.supportRoleId || "";
+      const customId = supId ? `tp_${catId}_${supId}` : `tp_${catId}`;
       const component = {
         type: 2,
         style: 3,
