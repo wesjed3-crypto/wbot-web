@@ -159,6 +159,7 @@
             <button type="button" class="tab-btn" data-tab="tab-reaction-roles">🎭 Roles por Botones</button>
             <button type="button" class="tab-btn" data-tab="tab-tickets">🎫 Tickets</button>
             <button type="button" class="tab-btn" data-tab="tab-invites">📨 Invitaciones</button>
+            <button type="button" class="tab-btn" data-tab="tab-boosts">🚀 Boosts</button>
             <button type="button" class="tab-btn" data-tab="tab-support">✉️ Soporte</button>
           </aside>
 
@@ -360,7 +361,23 @@
               </div>
             </div>
 
-            <!-- Pestaña 9: Soporte del Creador -->
+            <!-- Pestaña 9: Boost Logger -->
+            <div class="tab-content hidden" id="tab-boosts">
+              <div class="panel">
+                <h3>🚀 Logger de Boosts</h3>
+                <p class="tab-desc">Cuando alguien mejore el servidor con un boost, envía un embed al canal configurado.</p>
+                <div class="switch-grid">
+                  <label><input type="checkbox" name="boostLoggerEnabled"> Activar Logger de Boosts</label>
+                  <label><input type="checkbox" name="boostLoggerEmbed"> Embed Habilitado</label>
+                </div>
+                <label>Canal de boosts <select name="boostLoggerChannelId"><option value="">Seleccionar...</option></select></label>
+                <label>Título del embed <input name="boostLoggerTitle" placeholder="🚀 Nuevo boost"></label>
+                <label>Descripción <textarea name="boostLoggerDescription" rows="3" placeholder="{user} ha mejorado el servidor..."></textarea></label>
+                <label>Color (HEX) <input name="boostLoggerColor" placeholder="#f97316"></label>
+              </div>
+            </div>
+
+            <!-- Pestaña 10: Soporte del Creador -->
             <div class="tab-content hidden" id="tab-support">
               <div class="panel support-card-panel">
                 <h3>✉️ Soporte & Contacto</h3>

@@ -404,6 +404,7 @@ async function loadGuildChannelsAndRoles(guildId) {
     populateSelect(form.welcomeChannelId, channelData.textChannels);
     populateSelect(form.farewellChannelId, channelData.textChannels);
     populateSelect(form.inviteLoggerChannelId, channelData.textChannels);
+    populateSelect(form.boostLoggerChannelId, channelData.textChannels);
     populateRoleSelect(form.mutedRoleId, roleData);
   } catch (error) {
     console.error("Error loading channels/roles:", error);
@@ -482,6 +483,14 @@ function fillForm(config) {
   form.inviteLoggerTitle.value = config.inviteLogger?.title || "";
   form.inviteLoggerDescription.value = config.inviteLogger?.description || "";
   form.inviteLoggerColor.value = config.inviteLogger?.color || "#8b5cf6";
+
+  // Boost Logger
+  form.boostLoggerEnabled.checked = Boolean(config.boostLogger?.enabled);
+  form.boostLoggerEmbed.checked = Boolean(config.boostLogger?.embedEnabled);
+  form.boostLoggerChannelId.value = config.boostLogger?.channelId || "";
+  form.boostLoggerTitle.value = config.boostLogger?.title || "";
+  form.boostLoggerDescription.value = config.boostLogger?.description || "";
+  form.boostLoggerColor.value = config.boostLogger?.color || "#f97316";
 }
 
 function renderPunishmentWarnsTable(list) {
@@ -699,6 +708,14 @@ function readForm() {
       title: form.inviteLoggerTitle.value,
       description: form.inviteLoggerDescription.value,
       color: form.inviteLoggerColor.value
+    },
+    boostLogger: {
+      enabled: form.boostLoggerEnabled.checked,
+      channelId: form.boostLoggerChannelId.value,
+      embedEnabled: form.boostLoggerEmbed.checked,
+      title: form.boostLoggerTitle.value,
+      description: form.boostLoggerDescription.value,
+      color: form.boostLoggerColor.value
     }
   };
 }

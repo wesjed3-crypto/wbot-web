@@ -119,6 +119,15 @@ const defaultGuildConfig = {
     title: "🎉 Nueva invitación",
     description: "{inviter} ha invitado a **{joined}** al servidor.\n📊 Invitaciones totales de {inviter}: **{invites}**",
     color: "#8b5cf6"
+  },
+
+  boostLogger: {
+    enabled: false,
+    channelId: "",
+    embedEnabled: true,
+    title: "🚀 Nuevo boost",
+    description: "{user} ha mejorado el servidor **{server}** con un boost.\n¡Gracias por el apoyo {user}! 🎉",
+    color: "#f97316"
   }
 };
 
@@ -1138,6 +1147,16 @@ app.put("/api/guilds/:guildId/config", requireAuth, async (req, res) => {
       title: String(incoming.inviteLogger?.title || defaultGuildConfig.inviteLogger.title).trim(),
       description: String(incoming.inviteLogger?.description || "").trim(),
       color: String(incoming.inviteLogger?.color || "#8b5cf6").trim()
+    };
+
+    // Boost Logger
+    guildConfig.boostLogger = {
+      enabled: Boolean(incoming.boostLogger?.enabled),
+      channelId: String(incoming.boostLogger?.channelId || "").trim(),
+      embedEnabled: Boolean(incoming.boostLogger?.embedEnabled),
+      title: String(incoming.boostLogger?.title || defaultGuildConfig.boostLogger.title).trim(),
+      description: String(incoming.boostLogger?.description || "").trim(),
+      color: String(incoming.boostLogger?.color || "#f97316").trim()
     };
 
     res.json(await setGuildConfig(req.params.guildId, guildConfig));
