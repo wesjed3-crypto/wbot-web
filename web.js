@@ -1084,9 +1084,6 @@ app.put("/api/guilds/:guildId/config", requireAuth, async (req, res) => {
     guildConfig.punishments.timeoutMinutes = Math.max(1, Math.min(40320, Number(incoming.punishments?.timeoutMinutes || 60)));
     guildConfig.punishments.warnsForKick = Math.max(1, Math.min(50, Number(incoming.punishments?.warnsForKick || 5)));
 
-    // Admin roles
-    guildConfig.adminRoles = Array.isArray(incoming.adminRoles) ? incoming.adminRoles.filter(r => typeof r === "string") : [];
-
     // Invited by
     if (incoming.invitedBy) guildConfig.invitedBy = String(incoming.invitedBy);
 
