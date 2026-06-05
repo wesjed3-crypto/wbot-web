@@ -28,7 +28,8 @@ const MONGODB_URI =
   process.env.MONGODB_URL ||
   process.env.DATABASE_URL;
 const SITE_NAME = process.env.WEB_NAME || "wbot";
-const BOT_MONGODB_URI = process.env.BOT_MONGODB_URI || "";
+const BOT_API_URL = process.env.BOT_API_URL || "";
+const API_SECRET = process.env.API_SECRET || "";
 const DATA_DIR = path.join(__dirname, "data");
 const CONFIG_FILE = path.join(DATA_DIR, "guild-configs.json");
 let botProcess = null;
@@ -153,28 +154,6 @@ const guildConfigSchema = new mongoose.Schema({
 
 const GuildConfig = mongoose.models.GuildConfig || mongoose.model("GuildConfig", guildConfigSchema);
 
-let botConn = null;
-let BotGuildConfig = null;
-let botMongoAttempted = false;
-let useBotMongo = false;
-
-async function ensureBotMongo() {
-  if (!BOT_MONGODB_URI) return false;
-  if (botConn && botConn.readyState === 1) { useBotMongo = true; return true; }
-  if (botMongoAttempted && !useBotMongo) return false;
-  botMongoAttempted = true;
-  try {
-    botConn = await mongoose.createConnection(BOT_MONGODB_URI).asPromise();
-    BotGuildConfig = botConn.model("GuildConfig", guildConfigSchema);
-    useBotMongo = true;
-    return true;
-  } catch (e) {
-    console.warn("⚠️  No se pudo conectar a la DB del bot:", e.message);
-    useBotMongo = false;
-    return false;
-  }
-}
-
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -296,16 +275,19 @@ async function setGuildConfig(guildId, config) {
       console.warn("⚠️  Error guardando en MongoDB (web):", e.message);
     }
   }
-  // Sync to bot's MongoDB so bot features (inviteLogger, etc.) see the config
-  if (await ensureBotMongo() && useBotMongo && BotGuildConfig) {
+  // Sync to bot's API so bot features (inviteLogger, etc.) see the config
+  if (BOT_API_URL && API_SECRET) {
     try {
-      await BotGuildConfig.findOneAndUpdate(
-        { guildId },
-        { $set: { config: clean } },
-        { upsert: true }
-      );
+      await fetch(`${BOT_API_URL}/api/config`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-secret": API_SECRET
+        },
+        body: JSON.stringify({ guildId, config: clean })
+      });
     } catch (e) {
-      console.warn("⚠️  Error guardando en MongoDB (bot):", e.message);
+      console.warn("⚠️  Error sincronizando config con el bot:", e.message);
     }
   }
   return fileSetGuildConfig(guildId, config);
