@@ -278,7 +278,7 @@ async function setGuildConfig(guildId, config) {
   // Sync to bot's API so bot features (inviteLogger, etc.) see the config
   if (BOT_API_URL && API_SECRET) {
     try {
-      await fetch(`${BOT_API_URL}/api/config`, {
+      const syncRes = await fetch(`${BOT_API_URL}/api/config`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -286,8 +286,14 @@ async function setGuildConfig(guildId, config) {
         },
         body: JSON.stringify({ guildId, config: clean })
       });
+      if (!syncRes.ok) {
+        const body = await syncRes.text().catch(() => "");
+        console.warn(`⚠️  Bot API respondió ${syncRes.status}: ${body}`);
+      } else {
+        console.log(`✅ Config de guild ${guildId} sincronizada con el bot`);
+      }
     } catch (e) {
-      console.warn("⚠️  Error sincronizando config con el bot:", e.message);
+      console.warn(`⚠️  Error conectando con el bot (${BOT_API_URL}): ${e.message}`);
     }
   }
   return fileSetGuildConfig(guildId, config);
