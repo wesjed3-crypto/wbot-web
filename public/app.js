@@ -490,7 +490,7 @@ function renderPunishmentWarnsTable(list) {
       <td style="padding:8px 4px;">${p.warns}</td>
       <td style="padding:8px 4px;">${actionLabels[p.action] || p.action}</td>
       <td style="padding:8px 4px;">${p.action === "timeout" ? (p.duration || 60) + " min" : "—"}</td>
-      <td style="padding:8px 4px;"><button type="button" class="btn" data-remove-pw="${i}" style="background:#dc2626;font-size:12px;padding:2px 8px;">✕</button></td>
+      <td style="padding:8px 4px;"><button type="button" class="button danger sm icon" data-remove-pw="${i}">✕</button></td>
     `;
     tbody.appendChild(tr);
   });
@@ -739,15 +739,15 @@ function renderReactionPanels() {
           </span>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button type="button" class="button secondary" data-edit-panel="${panel.id}" style="font-size: 12px; height: 32px; padding: 0 12px;">✏️</button>
-          <button type="button" class="button danger" data-delete-panel="${panel.id}" style="font-size: 12px; height: 32px; padding: 0 12px;">🗑️</button>
+          <button type="button" class="button secondary sm" data-edit-panel="${panel.id}">✏️</button>
+          <button type="button" class="button danger sm" data-delete-panel="${panel.id}">🗑️</button>
         </div>
       </div>
       <div style="margin-top: 10px; display: flex; gap: 6px;">
         <select data-panel-channel="${panel.id}" style="flex: 1;">
           <option value="">Canal...</option>
         </select>
-        <button type="button" class="button primary" data-send-panel="${panel.id}" style="font-size: 12px; height: 32px; padding: 0 12px;">${sent ? "🔄 Actualizar" : "📨 Enviar"}</button>
+        <button type="button" class="button primary sm" data-send-panel="${panel.id}">${sent ? "🔄 Actualizar" : "📨 Enviar"}</button>
       </div>
     `;
 
@@ -883,7 +883,7 @@ function editReactionPanel(panelId) {
         <label style="flex: 0; flex-direction: row; gap: 4px; margin: 0; white-space: nowrap; font-size: 11px;">
           <input type="checkbox" data-field-inline="${i}" ${f.inline ? "checked" : ""}> inline
         </label>
-        <button type="button" class="button danger" data-remove-field="${i}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>
+        <button type="button" class="button danger sm icon" data-remove-field="${i}">✕</button>
       </div>`;
   });
 
@@ -895,7 +895,7 @@ function editReactionPanel(panelId) {
         <select data-rr-role="${i}" style="flex: 2;">
           <option value="">Rol...</option>
         </select>
-        <button type="button" class="button danger" data-remove-rr="${i}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>
+        <button type="button" class="button danger sm icon" data-remove-rr="${i}">✕</button>
       </div>`;
   });
 
@@ -903,8 +903,8 @@ function editReactionPanel(panelId) {
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
       <h3 style="margin: 0;">✏️ Editar Panel</h3>
       <div style="display: flex; gap: 6px;">
-        <button type="button" class="button secondary" data-close-editor="${panelId}" style="font-size: 12px; height: 32px; padding: 0 12px;">← Volver</button>
-        <button type="button" class="button primary" data-save-editor="${panelId}" style="font-size: 12px; height: 32px; padding: 0 12px;">💾 Guardar</button>
+        <button type="button" class="button secondary sm" data-close-editor="${panelId}">← Volver</button>
+        <button type="button" class="button primary sm" data-save-editor="${panelId}">💾 Guardar</button>
       </div>
     </div>
     <label>Título <input id="rr-title" value="${escHtml(embed.title || "")}"></label>
@@ -917,14 +917,14 @@ function editReactionPanel(panelId) {
     <div style="margin-top: 16px;">
       <strong style="font-size: 14px;">📋 Fields</strong>
       <div id="rr-fields-list" style="margin-top: 8px;">${fieldsHtml}</div>
-      <button type="button" class="button secondary" id="addFieldBtn" style="font-size: 12px; height: 32px; padding: 0 12px; margin-top: 8px;">➕ Añadir Field</button>
+      <button type="button" class="button secondary sm add" id="addFieldBtn">➕ Añadir Field</button>
     </div>
 
     <div style="margin-top: 16px;">
       <strong style="font-size: 14px;">🎭 Reacciones</strong>
       <p style="font-size: 12px; color: var(--text-dim); margin: 4px 0 8px;">Emoji + Rol que se asignará al reaccionar.</p>
       <div id="rr-reactions-list" style="margin-top: 8px;">${reactionsHtml}</div>
-      <button type="button" class="button secondary" id="addRrBtn" style="font-size: 12px; height: 32px; padding: 0 12px; margin-top: 8px;">➕ Añadir Reacción</button>
+      <button type="button" class="button secondary sm add" id="addRrBtn">➕ Añadir Reacción</button>
     </div>
   `;
 
@@ -965,7 +965,7 @@ function editReactionPanel(panelId) {
       <label style="flex: 0; flex-direction: row; gap: 4px; margin: 0; white-space: nowrap; font-size: 11px;">
         <input type="checkbox" data-field-inline="${idx}"> inline
       </label>
-      <button type="button" class="button danger" data-remove-field="${idx}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>`;
+      <button type="button" class="button danger sm icon" data-remove-field="${idx}">✕</button>`;
     row.querySelector(`[data-remove-field="${idx}"]`).addEventListener("click", () => row.remove());
     fieldList.appendChild(row);
   });
@@ -979,7 +979,7 @@ function editReactionPanel(panelId) {
     row.innerHTML = `
       <input data-rr-emoji="${idx}" placeholder="Emoji (✅ o <:name:id>)" style="flex: 1;">
       <select data-rr-role="${idx}" style="flex: 2;"><option value="">Rol...</option></select>
-      <button type="button" class="button danger" data-remove-rr="${idx}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>`;
+      <button type="button" class="button danger sm icon" data-remove-rr="${idx}">✕</button>`;
     const roleSel = row.querySelector(`[data-rr-role="${idx}"]`);
     roleData.forEach(r => {
       const opt = document.createElement("option");
@@ -1085,15 +1085,15 @@ function renderTicketPanels() {
           </span>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button type="button" class="button secondary" data-edit-tp="${panel.id}" style="font-size: 12px; height: 32px; padding: 0 12px;">✏️</button>
-          <button type="button" class="button danger" data-delete-tp="${panel.id}" style="font-size: 12px; height: 32px; padding: 0 12px;">🗑️</button>
+          <button type="button" class="button secondary sm" data-edit-tp="${panel.id}">✏️</button>
+          <button type="button" class="button danger sm" data-delete-tp="${panel.id}">🗑️</button>
         </div>
       </div>
       <div style="margin-top: 10px; display: flex; gap: 6px;">
         <select data-tp-channel="${panel.id}" style="flex: 1;">
           <option value="">Canal...</option>
         </select>
-        <button type="button" class="button primary" data-send-tp="${panel.id}" style="font-size: 12px; height: 32px; padding: 0 12px;">${sent ? "🔄 Actualizar" : "📨 Enviar"}</button>
+        <button type="button" class="button primary sm" data-send-tp="${panel.id}">${sent ? "🔄 Actualizar" : "📨 Enviar"}</button>
       </div>
     `;
 
@@ -1227,7 +1227,7 @@ function editTicketPanel(panelId) {
         <label style="flex: 0; flex-direction: row; gap: 4px; margin: 0; white-space: nowrap; font-size: 11px;">
           <input type="checkbox" data-tpf-inline="${i}" ${f.inline ? "checked" : ""}> inline
         </label>
-        <button type="button" class="button danger" data-remove-tpf="${i}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>
+        <button type="button" class="button danger sm icon" data-remove-tpf="${i}">✕</button>
       </div>`;
   });
 
@@ -1240,7 +1240,7 @@ function editTicketPanel(panelId) {
         <select data-tpb-category="${i}" style="flex: 2; min-width: 120px;"><option value="">Categoría...</option></select>
         <select data-tpb-role="${i}" style="flex: 2; min-width: 120px;"><option value="">Rol soporte...</option></select>
         <input data-tpb-msg="${i}" value="${escHtml(b.welcomeMessage || "")}" placeholder="Mensaje de bienvenida" style="flex: 3; min-width: 150px;">
-        <button type="button" class="button danger" data-remove-tpb="${i}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>
+        <button type="button" class="button danger sm icon" data-remove-tpb="${i}">✕</button>
       </div>`;
   });
 
@@ -1251,8 +1251,8 @@ function editTicketPanel(panelId) {
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
       <h3 style="margin: 0;">✏️ Editar Panel de Tickets</h3>
       <div style="display: flex; gap: 6px;">
-        <button type="button" class="button secondary" data-close-tp-editor="${panelId}" style="font-size: 12px; height: 32px; padding: 0 12px;">← Volver</button>
-        <button type="button" class="button primary" data-save-tp-editor="${panelId}" style="font-size: 12px; height: 32px; padding: 0 12px;">💾 Guardar</button>
+        <button type="button" class="button secondary sm" data-close-tp-editor="${panelId}">← Volver</button>
+        <button type="button" class="button primary sm" data-save-tp-editor="${panelId}">💾 Guardar</button>
       </div>
     </div>
     <label>Título <input id="tp-title" value="${escHtml(embed.title || "")}"></label>
@@ -1265,14 +1265,14 @@ function editTicketPanel(panelId) {
     <div style="margin-top: 16px;">
       <strong style="font-size: 14px;">📋 Fields</strong>
       <div id="tp-fields-list" style="margin-top: 8px;">${fieldsHtml}</div>
-      <button type="button" class="button secondary" id="addTpFieldBtn" style="font-size: 12px; height: 32px; padding: 0 12px; margin-top: 8px;">➕ Añadir Field</button>
+      <button type="button" class="button secondary sm add" id="addTpFieldBtn">➕ Añadir Field</button>
     </div>
 
     <div style="margin-top: 16px;">
       <strong style="font-size: 14px;">🔘 Botones de Ticket</strong>
       <p style="font-size: 12px; color: var(--text-dim); margin: 4px 0 8px;">Cada botón crea un ticket en la categoría que elijas. Puedes añadir varios botones para diferentes tipos de ticket (soporte, reporte, etc.).</p>
       <div id="tp-buttons-list" style="margin-top: 8px;">${buttonsHtml}</div>
-      <button type="button" class="button secondary" id="addTpBtnBtn" style="font-size: 12px; height: 32px; padding: 0 12px; margin-top: 8px;">➕ Añadir Botón</button>
+      <button type="button" class="button secondary sm add" id="addTpBtnBtn">➕ Añadir Botón</button>
     </div>
   `;
 
@@ -1325,7 +1325,7 @@ function editTicketPanel(panelId) {
       <label style="flex: 0; flex-direction: row; gap: 4px; margin: 0; white-space: nowrap; font-size: 11px;">
         <input type="checkbox" data-tpf-inline="${idx}"> inline
       </label>
-      <button type="button" class="button danger" data-remove-tpf="${idx}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>`;
+      <button type="button" class="button danger sm icon" data-remove-tpf="${idx}">✕</button>`;
     row.querySelector(`[data-remove-tpf="${idx}"]`).addEventListener("click", () => row.remove());
     fieldList.appendChild(row);
   });
@@ -1342,7 +1342,7 @@ function editTicketPanel(panelId) {
       <select data-tpb-category="${idx}" style="flex: 2; min-width: 120px;"><option value="">Categoría...</option></select>
       <select data-tpb-role="${idx}" style="flex: 2; min-width: 120px;"><option value="">Rol soporte...</option></select>
       <input data-tpb-msg="${idx}" placeholder="Mensaje de bienvenida" style="flex: 3; min-width: 150px;">
-      <button type="button" class="button danger" data-remove-tpb="${idx}" style="font-size: 12px; height: 32px; padding: 0 8px;">✕</button>`;
+      <button type="button" class="button danger sm icon" data-remove-tpb="${idx}">✕</button>`;
     const catSel = row.querySelector(`[data-tpb-category="${idx}"]`);
     if (chData?.categories) {
       chData.categories.forEach(c => {

@@ -994,6 +994,26 @@ textarea {
   to { transform: rotate(360deg); }
 }
 
+/* Botón pequeño */
+.button.sm {
+  font-size: 12px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+}
+
+.button.sm.icon {
+  padding: 0 8px;
+}
+
+.button.sm.add {
+  margin-top: 8px;
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
 /* Animaciones */
 @keyframes pulse-glow {
   0% {
