@@ -1610,6 +1610,45 @@ async function saveTicketPanelEditor(panelId) {
   }
 }
 
+// Plantillas de Logger
+const INVITE_TEMPLATES = {
+  simple:       { title: "🎉 Nueva invitación",                     description: "{inviter} ha invitado a **{joined}** al servidor.",                                                                          color: "#8b5cf6" },
+  stats:        { title: "📊 Invitación registrada",                description: "{inviter} ha invitado a **{joined}** al servidor.\n📊 Invitaciones totales de {inviter}: **{invites}**",                       color: "#10b981" },
+  minimal:      { title: "👋 Nuevo miembro",                        description: "{joined} fue invitado por {inviter}.",                                                                                        color: "#3b82f6" }
+};
+
+const BOOST_TEMPLATES = {
+  simple:       { title: "🚀 Nuevo boost",                          description: "{user} ha mejorado el servidor **{server}** con un boost.\n¡Gracias por el apoyo {user}! 🎉",                                   color: "#f97316" },
+  celebration:  { title: "🎉 Gracias por el boost",                 description: "¡{user} ha dado un boost a **{server}**!\n\n{user} → **Nivel {boostLevel}** 🚀\n\n¡Gracias por apoyar el servidor! 💜",       color: "#ec4899" },
+  minimal:      { title: "✨ Boost recibido",                       description: "{user} boosteó el servidor.",                                                                                                 color: "#a855f7" }
+};
+
+elements.configForm.addEventListener("click", e => {
+  const form = elements.configForm;
+
+  const ilt = e.target.closest("[data-ilt]");
+  if (ilt) {
+    const tpl = INVITE_TEMPLATES[ilt.dataset.ilt];
+    if (!tpl) return;
+    form.inviteLoggerTitle.value = tpl.title;
+    form.inviteLoggerDescription.value = tpl.description;
+    form.inviteLoggerColor.value = tpl.color;
+    elements.saveConfigBtn?.classList.add("changed");
+    return;
+  }
+
+  const blt = e.target.closest("[data-blt]");
+  if (blt) {
+    const tpl = BOOST_TEMPLATES[blt.dataset.blt];
+    if (!tpl) return;
+    form.boostLoggerTitle.value = tpl.title;
+    form.boostLoggerDescription.value = tpl.description;
+    form.boostLoggerColor.value = tpl.color;
+    elements.saveConfigBtn?.classList.add("changed");
+    return;
+  }
+});
+
 // Guardar Configuración
 elements.configForm.addEventListener("submit", async event => {
   event.preventDefault();
