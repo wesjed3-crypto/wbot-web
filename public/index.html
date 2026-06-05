@@ -158,6 +158,7 @@
             <button type="button" class="tab-btn" data-tab="tab-words">🚫 Palabras</button>
             <button type="button" class="tab-btn" data-tab="tab-reaction-roles">🎭 Roles por Botones</button>
             <button type="button" class="tab-btn" data-tab="tab-tickets">🎫 Tickets</button>
+            <button type="button" class="tab-btn" data-tab="tab-invites">📨 Invitaciones</button>
             <button type="button" class="tab-btn" data-tab="tab-support">✉️ Soporte</button>
           </aside>
 
@@ -343,7 +344,23 @@
               </div>
             </div>
 
-            <!-- Pestaña 8: Soporte del Creador -->
+            <!-- Pestaña 8: Invite Logger -->
+            <div class="tab-content hidden" id="tab-invites">
+              <div class="panel">
+                <h3>📨 Logger de Invitaciones</h3>
+                <p class="tab-desc">Cuando alguien se una mediante una invitación, envía un embed al canal configurado con quién invitó y cuántas invitaciones tiene.</p>
+                <div class="switch-grid">
+                  <label><input type="checkbox" name="inviteLoggerEnabled"> Activar Logger de Invitaciones</label>
+                  <label><input type="checkbox" name="inviteLoggerEmbed"> Embed Habilitado</label>
+                </div>
+                <label>Canal de invitaciones <select name="inviteLoggerChannelId"><option value="">Seleccionar...</option></select></label>
+                <label>Título del embed <input name="inviteLoggerTitle" placeholder="🎉 Nueva invitación"></label>
+                <label>Descripción <textarea name="inviteLoggerDescription" rows="3" placeholder="{inviter} ha invitado a {joined}..."></textarea></label>
+                <label>Color (HEX) <input name="inviteLoggerColor" placeholder="#8b5cf6"></label>
+              </div>
+            </div>
+
+            <!-- Pestaña 9: Soporte del Creador -->
             <div class="tab-content hidden" id="tab-support">
               <div class="panel support-card-panel">
                 <h3>✉️ Soporte & Contacto</h3>

@@ -403,6 +403,7 @@ async function loadGuildChannelsAndRoles(guildId) {
     populateSelect(form.logChannelId, channelData.textChannels);
     populateSelect(form.welcomeChannelId, channelData.textChannels);
     populateSelect(form.farewellChannelId, channelData.textChannels);
+    populateSelect(form.inviteLoggerChannelId, channelData.textChannels);
     populateRoleSelect(form.mutedRoleId, roleData);
   } catch (error) {
     console.error("Error loading channels/roles:", error);
@@ -473,6 +474,14 @@ function fillForm(config) {
   // Castigos por Warns
   window._punishmentWarnsCache = (config.punishmentWarns || []).map(p => ({ ...p }));
   renderPunishmentWarnsTable(window._punishmentWarnsCache);
+
+  // Invite Logger
+  form.inviteLoggerEnabled.checked = Boolean(config.inviteLogger?.enabled);
+  form.inviteLoggerEmbed.checked = Boolean(config.inviteLogger?.embedEnabled);
+  form.inviteLoggerChannelId.value = config.inviteLogger?.channelId || "";
+  form.inviteLoggerTitle.value = config.inviteLogger?.title || "";
+  form.inviteLoggerDescription.value = config.inviteLogger?.description || "";
+  form.inviteLoggerColor.value = config.inviteLogger?.color || "#8b5cf6";
 }
 
 function renderPunishmentWarnsTable(list) {
@@ -682,7 +691,15 @@ function readForm() {
       maxRoleDeletes: Number(form.antiNukeMaxRoleDeletes.value),
       maxBans: Number(form.antiNukeMaxBans.value)
     },
-    punishmentWarns: window._punishmentWarnsCache || []
+    punishmentWarns: window._punishmentWarnsCache || [],
+    inviteLogger: {
+      enabled: form.inviteLoggerEnabled.checked,
+      channelId: form.inviteLoggerChannelId.value,
+      embedEnabled: form.inviteLoggerEmbed.checked,
+      title: form.inviteLoggerTitle.value,
+      description: form.inviteLoggerDescription.value,
+      color: form.inviteLoggerColor.value
+    }
   };
 }
 

@@ -110,7 +110,16 @@ const defaultGuildConfig = {
 
   reactionRoles: [],
 
-  ticketPanels: []
+  ticketPanels: [],
+
+  inviteLogger: {
+    enabled: false,
+    channelId: "",
+    embedEnabled: true,
+    title: "🎉 Nueva invitación",
+    description: "{inviter} ha invitado a **{joined}** al servidor.\n📊 Invitaciones totales de {inviter}: **{invites}**",
+    color: "#8b5cf6"
+  }
 };
 
 const app = express();
@@ -1119,6 +1128,16 @@ app.put("/api/guilds/:guildId/config", requireAuth, async (req, res) => {
       maxChannelDeletes: Math.max(1, Math.min(20, Number(incoming.antiNuke?.maxChannelDeletes || 3))),
       maxRoleDeletes: Math.max(1, Math.min(20, Number(incoming.antiNuke?.maxRoleDeletes || 3))),
       maxBans: Math.max(1, Math.min(20, Number(incoming.antiNuke?.maxBans || 3)))
+    };
+
+    // Invite Logger
+    guildConfig.inviteLogger = {
+      enabled: Boolean(incoming.inviteLogger?.enabled),
+      channelId: String(incoming.inviteLogger?.channelId || "").trim(),
+      embedEnabled: Boolean(incoming.inviteLogger?.embedEnabled),
+      title: String(incoming.inviteLogger?.title || defaultGuildConfig.inviteLogger.title).trim(),
+      description: String(incoming.inviteLogger?.description || "").trim(),
+      color: String(incoming.inviteLogger?.color || "#8b5cf6").trim()
     };
 
     res.json(await setGuildConfig(req.params.guildId, guildConfig));
