@@ -808,6 +808,7 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
     if (!panel.channelId) return res.status(400).json({ error: "El panel no tiene un canal asignado." });
 
     const forceResend = req.query.force === "true";
+    console.log(`[WEB] Enviando panel ${panel.id} a canal ${panel.channelId}, force=${forceResend}, singleSelect=${panel.singleSelect}`);
 
     let isUpdate = !!(panel.messageId && panel.channelId);
     if (forceResend && isUpdate) {
@@ -864,6 +865,7 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
         customId = `role_panel_${panel.id}_${i}`;
       }
       
+      console.log(`[WEB] Boton ${i}: label="${btn.label.trim()}", custom_id="${customId}", len=${customId.length}, mode=${mode}, roleIds=[${roleIds.join(",")}]`);
       const component = {
         type: 2,
         style: btn.style || 3,
@@ -910,6 +912,7 @@ app.post("/api/guilds/:guildId/reaction-roles/:panelId/send", requireAuth, async
 
     const saved = await setGuildConfig(req.params.guildId, config);
     const savedPanel = saved.reactionRoles?.find(p => p.id === panel.id);
+    console.log(`[WEB] Panel enviado OK. messageId=${msg.id}, channelId=${panel.channelId}`);
     res.json(savedPanel || panel);
   } catch (error) {
     console.error(error);
