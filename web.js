@@ -1016,6 +1016,18 @@ app.post("/api/guilds/:guildId/ticket-panels/:panelId/send", requireAuth, async 
     if (!panel) return res.status(404).json({ error: "Panel no encontrado." });
     if (!panel.channelId) return res.status(400).json({ error: "El panel no tiene un canal asignado." });
 
+    const forceResend = req.query.force === "true";
+
+    let isUpdate = !!(panel.messageId && panel.channelId);
+    if (forceResend && isUpdate) {
+      await fetch(`https://discord.com/api/v10/channels/${panel.channelId}/messages/${panel.messageId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bot ${token}` }
+      }).catch(() => {});
+      panel.messageId = "";
+      isUpdate = false;
+    }
+
     const embedPayload = {
       title: panel.embed.title?.slice(0, 256) || "Sistema de Tickets",
       description: panel.embed.description?.slice(0, 4096) || "",
@@ -1069,7 +1081,6 @@ app.post("/api/guilds/:guildId/ticket-panels/:panelId/send", requireAuth, async 
     }
     if (row.components.length > 0) components.push(row);
 
-    let isUpdate = !!(panel.messageId && panel.channelId);
     if (isUpdate) {
       const checkRes = await fetch(`https://discord.com/api/v10/channels/${panel.channelId}/messages/${panel.messageId}`, {
         headers: { Authorization: `Bot ${token}` }

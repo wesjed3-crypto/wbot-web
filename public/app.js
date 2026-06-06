@@ -1335,6 +1335,7 @@ function renderTicketPanels() {
           <option value="">Canal...</option>
         </select>
         <button type="button" class="button primary sm" data-send-tp="${panel.id}">${sent ? "🔄 Actualizar" : "📨 Enviar"}</button>
+        ${sent ? `<button type="button" class="button danger sm" data-resend-tp="${panel.id}">🔄 Reenviar</button>` : ""}
       </div>
     `;
 
@@ -1356,6 +1357,7 @@ function renderTicketPanels() {
     card.querySelector(`[data-edit-tp="${panel.id}"]`)?.addEventListener("click", () => editTicketPanel(panel.id));
     card.querySelector(`[data-delete-tp="${panel.id}"]`)?.addEventListener("click", () => deleteTicketPanel(panel.id));
     card.querySelector(`[data-send-tp="${panel.id}"]`)?.addEventListener("click", () => sendTicketPanel(panel.id));
+    card.querySelector(`[data-resend-tp="${panel.id}"]`)?.addEventListener("click", () => resendTicketPanel(panel.id));
     channelSelect?.addEventListener("change", async () => {
       await updateTicketPanel(panel.id, { channelId: channelSelect.value });
       showToast("Canal guardado");
@@ -1438,6 +1440,19 @@ async function sendTicketPanel(panelId) {
     if (idx !== -1) ticketPanelsCache[idx] = result;
     renderTicketPanels();
     showToast("Panel enviado");
+  } catch (error) {
+    showToast("Error: " + error.message, "error");
+  }
+}
+
+async function resendTicketPanel(panelId) {
+  if (!state.selectedGuild) return;
+  try {
+    const result = await api(`/api/guilds/${state.selectedGuild.id}/ticket-panels/${panelId}/send?force=true`, { method: "POST" });
+    const idx = ticketPanelsCache.findIndex(p => p.id === panelId);
+    if (idx !== -1) ticketPanelsCache[idx] = result;
+    renderTicketPanels();
+    showToast("Panel reenviado (mensaje antiguo eliminado)");
   } catch (error) {
     showToast("Error: " + error.message, "error");
   }
