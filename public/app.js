@@ -843,7 +843,8 @@ function renderReactionPanels() {
         <select data-panel-channel="${panel.id}" style="flex: 1;">
           <option value="">Canal...</option>
         </select>
-        <button type="button" class="button primary sm" data-send-panel="${panel.id}">${sent ? "🔄 Actualizar" : "📨 Enviar"}</button>
+        <button type="button" class="button primary sm" data-send-panel="${panel.id}">📨 Enviar</button>
+        ${sent ? `<button type="button" class="button danger sm" data-resend-panel="${panel.id}">🔄 Reenviar</button>` : ""}
       </div>
     `;
 
@@ -867,6 +868,7 @@ function renderReactionPanels() {
     card.querySelector(`[data-edit-panel="${panel.id}"]`)?.addEventListener("click", () => editReactionPanel(panel.id));
     card.querySelector(`[data-delete-panel="${panel.id}"]`)?.addEventListener("click", () => deleteReactionPanel(panel.id));
     card.querySelector(`[data-send-panel="${panel.id}"]`)?.addEventListener("click", () => sendReactionPanel(panel.id));
+    card.querySelector(`[data-resend-panel="${panel.id}"]`)?.addEventListener("click", () => resendReactionPanel(panel.id));
     channelSelect?.addEventListener("change", async () => {
       await updateReactionPanel(panel.id, { channelId: channelSelect.value });
       showToast("Canal guardado");
@@ -950,6 +952,19 @@ async function sendReactionPanel(panelId) {
     if (idx !== -1) reactionRolesCache[idx] = result;
     renderReactionPanels();
     showToast("Panel enviado al canal");
+  } catch (error) {
+    showToast("Error: " + error.message, "error");
+  }
+}
+
+async function resendReactionPanel(panelId) {
+  if (!state.selectedGuild) return;
+  try {
+    const result = await api(`/api/guilds/${state.selectedGuild.id}/reaction-roles/${panelId}/send?force=true`, { method: "POST" });
+    const idx = reactionRolesCache.findIndex(p => p.id === panelId);
+    if (idx !== -1) reactionRolesCache[idx] = result;
+    renderReactionPanels();
+    showToast("Panel reenviado (mensaje antiguo eliminado)");
   } catch (error) {
     showToast("Error: " + error.message, "error");
   }
