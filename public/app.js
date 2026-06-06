@@ -160,17 +160,39 @@ function refreshScrollReveal() {
     state.revealObserver = null;
   }
 
+  const SELECTORS = [
+    ".features .section-heading",
+    ".feature-card",
+    ".owner-panel",
+    ".owner-top-row",
+    ".owner-actions .button",
+    ".dashboard-section .section-heading",
+    ".dashboard-section .session-row",
+    ".server-selector-container",
+    ".panel:not(.tp-btn-row .panel)",
+    ".guild-card-btn",
+    ".tab-btn",
+    ".bot-guild-card",
+    ".support-card-panel",
+    ".support-item",
+    ".guild-info-wrap",
+    ".search-wrap"
+  ];
+
   const revealTargets = [
-    ...document.querySelectorAll(".features .section-heading, .feature-card, .owner-panel, .dashboard-section .section-heading, .dashboard-section .session-row, .server-selector-container, .panel")
+    ...document.querySelectorAll(SELECTORS.join(", "))
   ].filter(element => !element.closest(".hidden") && !element.classList.contains("hidden"));
 
   revealTargets.forEach((element, index) => {
     element.classList.add("reveal-on-scroll");
     element.classList.remove("in-view");
-    element.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 70}ms`);
 
-    const directionClasses = ["from-bottom", "from-left", "from-scale", "from-right"];
-    element.classList.add(directionClasses[index % directionClasses.length]);
+    const parentGroup = element.closest(".feature-grid, .guild-list, .console-sidebar, .bot-guilds-list, .support-details, .owner-actions, .bot-guilds-wrapper");
+    const groupIndex = parentGroup ? [...parentGroup.children].indexOf(element) : index;
+    element.style.setProperty("--reveal-delay", `${Math.min(groupIndex % 8, 7) * 60}ms`);
+
+    const variants = ["from-bottom", "from-left", "from-scale", "from-right", "fade-up", "fade-up", "zoom-in", "from-bottom"];
+    element.classList.add(variants[index % variants.length]);
   });
 
   if (!("IntersectionObserver" in window)) {
@@ -186,8 +208,8 @@ function refreshScrollReveal() {
       }
     });
   }, {
-    threshold: 0.18,
-    rootMargin: "0px 0px -14% 0px"
+    threshold: 0.12,
+    rootMargin: "0px 0px -8% 0px"
   });
 
   requestAnimationFrame(() => {
