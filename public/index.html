@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=6.8">
+    <link rel="stylesheet" href="/styles.css?v=7.0">
   </head>
   <body>
     <main class="site-shell">
@@ -34,6 +34,8 @@
       </header>
 
       <section class="hero" id="home">
+        <div class="hero-particles" aria-hidden="true"></div>
+        <div class="hero-shine" aria-hidden="true"></div>
         <canvas id="snowflakeCanvas" aria-hidden="true"></canvas>
         <div class="hero-avatar-container">
           <div class="glowing-avatar">
@@ -43,20 +45,22 @@
           </div>
         </div>
         <div class="hero-content">
-          <span class="kicker">Discord moderation dashboard</span>
-          <h1 id="brandName">wbot</h1>
-          <div class="hero-signature">by wesjed ツ</div>
-          <p class="hero-description">Modera servidores, configura automod y gestiona avisos desde un panel limpio conectado a tu bot.</p>
-          <div class="hero-actions">
+          <span class="kicker hero-animate hero-animate-d1">Discord moderation dashboard</span>
+          <h1 id="brandName" class="hero-animate hero-animate-d2">wbot</h1>
+          <div class="hero-signature hero-animate hero-animate-d3">by wesjed ツ</div>
+          <p class="hero-description hero-animate hero-animate-d4">Modera servidores, configura automod y gestiona avisos desde un panel limpio conectado a tu bot.</p>
+          <div class="hero-actions hero-animate hero-animate-d5">
             <a class="button primary" href="/login" id="heroLoginButton"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Conectar Discord</a>
             <a class="button secondary" href="#dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Ver panel</a>
           </div>
         </div>
-        <div class="badge-row">
+        <div class="badge-row hero-animate hero-animate-d6">
           <span class="mini-badge">🚫 Anti spam</span>
           <span class="mini-badge">📝 Logs</span>
           <span class="mini-badge">⚠️ Warnings</span>
           <span class="mini-badge">🛡️ Automod</span>
+          <span class="mini-badge">🎫 Tickets</span>
+          <span class="mini-badge">⭐ Levels</span>
         </div>
       </section>
 
@@ -90,28 +94,60 @@
         </div>
         <div class="feature-grid">
           <article class="feature-card">
-            <h3>⚔️ Moderacion</h3>
-            <p>Ban, kick, timeout y avisos con registro de casos. 📄</p>
-            <span>💻 Slash commands</span>
-            <span>💾 Casos guardados</span>
+            <h3>⚔️ Moderación</h3>
+            <p>Gestiona tu servidor con ban, kick, timeout y avisos con registro de casos automático. Todo desde comandos de barra y prefijo.</p>
+            <span>💻 Slash & prefix</span>
+            <span>📄 Historial de casos</span>
+            <span>🔇 Timeout automático</span>
           </article>
           <article class="feature-card">
             <h3>🛡️ Automod</h3>
-            <p>Bloquea invitaciones, spam, menciones masivas y palabras. 🚫</p>
+            <p>Bloquea invitaciones, enlaces, spam, menciones masivas, palabras prohibidas y mayúsculas excesivas con sanciones configurables.</p>
             <span>⚙️ Filtros editables</span>
-            <span>⚖️ Sanciones automáticas</span>
+            <span>⚖️ Sanción automática</span>
+            <span>🧠 Sin falsos positivos</span>
           </article>
           <article class="feature-card">
             <h3>📝 Logs</h3>
-            <p>Canal configurable para acciones y eventos importantes. 🔔</p>
+            <p>Canal configurable con eventos detallados: mensajes editados/eliminados, bans, kicks, timeouts, entradas y salidas de miembros.</p>
             <span>🌍 Por servidor</span>
             <span>🎨 Embeds limpios</span>
+            <span>🔔 Tiempo real</span>
           </article>
           <article class="feature-card">
-            <h3>💻 Dashboard</h3>
-            <p>Cada admin configura su servidor desde la web. ⚡</p>
+            <h3>🎫 Tickets</h3>
+            <p>Sistema de tickets con paneles personalizables, botones múltiples, soporte por roles y mensajes de bienvenida editables.</p>
+            <span>🔘 Múltiples botones</span>
+            <span>👥 Soporte por roles</span>
+            <span>✏️ Bienvenida editable</span>
+          </article>
+          <article class="feature-card">
+            <h3>🎭 Roles por Botones</h3>
+            <p>Crea paneles con botones que asignan roles automáticamente. Soporta selección múltiple y única con diseño autogestionado.</p>
+            <span>✅ Multi / Único</span>
+            <span>🔄 Sin base de datos</span>
+            <span>⚡ Sin demoras</span>
+          </article>
+          <article class="feature-card">
+            <h3>⭐ Niveles</h3>
+            <p>Los usuarios ganan XP por mensajes y suben de nivel con embeds personalizables. Cooldown y XP por mensaje configurables.</p>
+            <span>📈 XP por mensaje</span>
+            <span>🔄 Cooldown ajustable</span>
+            <span>🎨 Embed customizable</span>
+          </article>
+          <article class="feature-card">
+            <h3>📨 Invitaciones</h3>
+            <p>Rastrea quién invita a quién con logger de invitaciones. Compatible con templates personalizados de embed.</p>
+            <span>🔗 Tracking de invites</span>
+            <span>📊 Estadísticas</span>
+            <span>📋 Plantillas</span>
+          </article>
+          <article class="feature-card">
+            <h3>💻 Dashboard Web</h3>
+            <p>Panel de control completo desde el navegador. Configura tu servidor con OAuth de Discord, multi-servidor. 🚀</p>
             <span>🔑 OAuth Discord</span>
             <span>🔌 Multi servidor</span>
+            <span>⚡ Tiempo real</span>
           </article>
         </div>
       </section>
@@ -468,6 +504,6 @@
     <!-- Contenedor para ventanita emergente / Toast notifications -->
     <div id="toastContainer" class="toast-container"></div>
 
-    <script src="/app.js?v=6.8"></script>
+    <script src="/app.js?v=7.0"></script>
   </body>
 </html>

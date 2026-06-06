@@ -1,10 +1,13 @@
 {
   "build": {
-    "command": "npm install --production && npm cache clean --force"
+    "command": "npm install --production && npm cache clean --force",
+    "builder": "nixpacks"
   },
   "deploy": {
-    "startCommand": "npm start",
+    "startCommand": "node web.js",
     "healthcheckPath": "/health",
-    "restartPolicyType": "always"
+    "restartPolicyType": "always",
+    "numReplicas": 1,
+    "sleepApplication": false
   }
 }
