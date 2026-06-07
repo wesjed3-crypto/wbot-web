@@ -537,9 +537,7 @@ function fillForm(config) {
   form.twitchTitle.value = config.twitch?.title || "";
   form.twitchDescription.value = config.twitch?.description || "";
   form.twitchColor.value = config.twitch?.color || "#9146FF";
-  form.twitchFooter.value = config.twitch?.footer || "Twitch";
   form.twitchShowTimestamp.checked = config.twitch?.showTimestamp !== false;
-  form.twitchShowThumbnail.checked = config.twitch?.showThumbnail !== false;
   form.twitchShowImage.checked = config.twitch?.showImage !== false;
 }
 
@@ -826,9 +824,7 @@ function readForm() {
       title: form.twitchTitle.value,
       description: form.twitchDescription.value,
       color: form.twitchColor.value,
-      footer: form.twitchFooter.value,
       showTimestamp: form.twitchShowTimestamp.checked,
-      showThumbnail: form.twitchShowThumbnail.checked,
       showImage: form.twitchShowImage.checked,
       linkedAccounts: linkedAccountsCache
     }
