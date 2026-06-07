@@ -151,7 +151,11 @@ const defaultGuildConfig = {
     embedEnabled: true,
     title: "🔴 {streamer} está en vivo!",
     description: "**{streamer}** ha empezado a streamear en Twitch!\n\n🎮 **Juego:** {game}\n📺 **Título:** {title}\n👀 **Míralo en:** https://twitch.tv/{streamer}",
-    color: "#9146FF"
+    color: "#9146FF",
+    footer: "Twitch",
+    showTimestamp: true,
+    showThumbnail: true,
+    showImage: true
   }
 };
 
@@ -1261,7 +1265,11 @@ app.put("/api/guilds/:guildId/config", requireAuth, async (req, res) => {
       embedEnabled: Boolean(incoming.twitch?.embedEnabled),
       title: String(incoming.twitch?.title || defaultGuildConfig.twitch.title).trim(),
       description: String(incoming.twitch?.description || "").trim(),
-      color: String(incoming.twitch?.color || "#9146FF").trim()
+      color: String(incoming.twitch?.color || "#9146FF").trim(),
+      footer: String(incoming.twitch?.footer || "Twitch").trim(),
+      showTimestamp: incoming.twitch?.showTimestamp !== false,
+      showThumbnail: incoming.twitch?.showThumbnail !== false,
+      showImage: incoming.twitch?.showImage !== false
     };
 
     res.json(await setGuildConfig(req.params.guildId, guildConfig));
