@@ -533,6 +533,7 @@ function fillForm(config) {
   renderLinkedAccounts(config.twitch?.linkedAccounts || []);
   form.twitchChannelId.value = config.twitch?.channelId || "";
   form.twitchRoleToPing.value = config.twitch?.roleToPing || "";
+  form.twitchMessage.value = config.twitch?.message || "";
   form.twitchTitle.value = config.twitch?.title || "";
   form.twitchDescription.value = config.twitch?.description || "";
   form.twitchColor.value = config.twitch?.color || "#9146FF";
@@ -820,6 +821,7 @@ function readForm() {
       enabled: form.twitchEnabled.checked,
       channelId: form.twitchChannelId.value,
       roleToPing: form.twitchRoleToPing.value,
+      message: form.twitchMessage.value,
       embedEnabled: form.twitchEmbed.checked,
       title: form.twitchTitle.value,
       description: form.twitchDescription.value,
