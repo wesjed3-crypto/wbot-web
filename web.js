@@ -299,7 +299,9 @@ async function setGuildConfig(guildId, config) {
       });
       if (!syncRes.ok) {
         const body = await syncRes.text().catch(() => "");
-        console.warn(`⚠️  Bot API respondió ${syncRes.status}: ${body}`);
+        if (syncRes.status !== 404) {
+          console.warn(`⚠️  Bot API respondió ${syncRes.status}: ${body}`);
+        }
       } else {
         console.log(`✅ Config de guild ${guildId} sincronizada con el bot`);
       }
