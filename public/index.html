@@ -197,6 +197,7 @@
             <button type="button" class="tab-btn" data-tab="tab-invites">📨 Invitaciones</button>
             <button type="button" class="tab-btn" data-tab="tab-boosts">🚀 Boosts</button>
             <button type="button" class="tab-btn" data-tab="tab-levels">⭐ Niveles</button>
+            <button type="button" class="tab-btn" data-tab="tab-twitch">📺 Twitch</button>
             <button type="button" class="tab-btn" data-tab="tab-support">✉️ Soporte</button>
           </aside>
 
@@ -448,7 +449,45 @@
               </div>
             </div>
 
-            <!-- Pestaña 11: Soporte del Creador -->
+            <!-- Pestaña 11: Twitch -->
+            <div class="tab-content hidden" id="tab-twitch">
+              <div class="panel">
+                <h3>📺 Integración con Twitch</h3>
+                <p class="tab-desc">Conecta tu cuenta de Twitch para que el bot avise automáticamente cuando empieces a streamear en vivo. El bot revisará cada 3 minutos si estás online.</p>
+                <div class="switch-grid">
+                  <label><input type="checkbox" name="twitchEnabled"> Activar Monitor de Twitch</label>
+                  <label><input type="checkbox" name="twitchEmbed"> Embed Habilitado</label>
+                </div>
+                <label>Canal de anuncios <select name="twitchChannelId"><option value="">Seleccionar...</option></select></label>
+                <label>Rol a mencionar (opcional) <select name="twitchRoleToPing"><option value="">Ninguno...</option></select></label>
+                <label>Título del embed <input name="twitchTitle" placeholder="🔴 {streamer} está en vivo!"></label>
+                <label>Descripción <textarea name="twitchDescription" rows="4" placeholder="{streamer} ha empezado a streamear..."></textarea></label>
+                <label>Color (HEX) <input name="twitchColor" placeholder="#9146FF"></label>
+                <div style="margin-top: 12px;">
+                  <span style="font-size: 12px; color: var(--text-dim);">📋 Variables disponibles:</span>
+                  <div style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted);">
+                    <code style="background: var(--surface-active); padding: 2px 8px; border-radius: 4px;">{streamer}</code>
+                    <code style="background: var(--surface-active); padding: 2px 8px; border-radius: 4px;">{game}</code>
+                    <code style="background: var(--surface-active); padding: 2px 8px; border-radius: 4px;">{title}</code>
+                    <code style="background: var(--surface-active); padding: 2px 8px; border-radius: 4px;">{server}</code>
+                  </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                  <strong style="font-size: 14px;">👥 Cuentas vinculadas</strong>
+                  <p style="font-size: 12px; color: var(--text-dim); margin: 4px 0 8px;">Añade aquí los usuarios de Twitch que quieres que se anuncien cuando estén en vivo.</p>
+                  <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: end;">
+                    <input id="newTwitchAccount" placeholder="Usuario de Twitch" style="flex: 1;">
+                    <button type="button" class="button primary sm" id="addTwitchAccountBtn">➕ Añadir</button>
+                  </div>
+                  <div id="linkedAccountsList">
+                    <p style="color: var(--text-muted); font-size: 13px;">No hay cuentas vinculadas.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña 12: Soporte del Creador -->
             <div class="tab-content hidden" id="tab-support">
               <div class="panel support-card-panel">
                 <h3>✉️ Soporte & Contacto</h3>

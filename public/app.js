@@ -428,7 +428,9 @@ async function loadGuildChannelsAndRoles(guildId) {
     populateSelect(form.inviteLoggerChannelId, channelData.textChannels);
     populateSelect(form.boostLoggerChannelId, channelData.textChannels);
     populateSelect(form.levelSystemChannelId, channelData.textChannels);
+    populateSelect(form.twitchChannelId, channelData.textChannels);
     populateRoleSelect(form.mutedRoleId, roleData);
+    populateRoleSelect(form.twitchRoleToPing, roleData);
   } catch (error) {
     console.error("Error loading channels/roles:", error);
     showToast(error.message || "No se pudieron cargar canales/roles. ¿Token inválido?", "error");
@@ -524,6 +526,56 @@ function fillForm(config) {
   form.levelSystemColor.value = config.levelSystem?.color || "#8b5cf6";
   form.levelSystemXpPerMessage.value = config.levelSystem?.xpPerMessage || 20;
   form.levelSystemCooldown.value = config.levelSystem?.cooldown || 60;
+
+  // Twitch
+  form.twitchEnabled.checked = Boolean(config.twitch?.enabled);
+  form.twitchEmbed.checked = Boolean(config.twitch?.embedEnabled);
+  renderLinkedAccounts(config.twitch?.linkedAccounts || []);
+  form.twitchChannelId.value = config.twitch?.channelId || "";
+  form.twitchRoleToPing.value = config.twitch?.roleToPing || "";
+  form.twitchTitle.value = config.twitch?.title || "";
+  form.twitchDescription.value = config.twitch?.description || "";
+  form.twitchColor.value = config.twitch?.color || "#9146FF";
+}
+
+let linkedAccountsCache = [];
+
+async function addTwitchAccount() {
+  const input = document.getElementById("newTwitchAccount");
+  if (!input || !input.value.trim()) return;
+  const name = input.value.trim();
+  if (name.length < 2) { showToast("Usuario de Twitch inválido.", "error"); return; }
+  if (linkedAccountsCache.some(a => a.twitchName.toLowerCase() === name.toLowerCase())) {
+    showToast("Esa cuenta ya está vinculada.", "error");
+    return;
+  }
+  linkedAccountsCache.push({ userId: "web", twitchName: name });
+  renderLinkedAccounts(linkedAccountsCache);
+  input.value = "";
+  elements.saveConfigBtn?.classList.add("changed");
+  showToast(`Cuenta de Twitch "${name}" añadida. Guarda los cambios para aplicar.`);
+}
+
+function renderLinkedAccounts(accounts) {
+  linkedAccountsCache = accounts || [];
+  const listEl = document.getElementById("linkedAccountsList");
+  if (!listEl) return;
+  if (!accounts || accounts.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No hay cuentas vinculadas.</p>';
+    return;
+  }
+  listEl.innerHTML = `<table style="width:100%; border-collapse: collapse; margin-top: 8px;">
+    <thead><tr style="text-align:left; border-bottom: 1px solid #334155;">
+      <th style="padding: 8px 4px;">Twitch</th>
+      <th style="padding: 8px 4px;"></th>
+    </tr></thead>
+    <tbody>${accounts.map((a, i) => `
+      <tr style="border-bottom: 1px solid #1e293b;">
+        <td style="padding: 8px 4px;"><strong>${escHtml(a.twitchName)}</strong></td>
+        <td style="padding: 8px 4px; text-align: right;"><button type="button" class="button danger sm icon" data-remove-twitch="${i}">✕</button></td>
+      </tr>
+    `).join("")}</tbody>
+  </table>`;
 }
 
 function renderPunishmentWarnsTable(list) {
@@ -759,6 +811,16 @@ function readForm() {
       color: form.levelSystemColor.value,
       xpPerMessage: Number(form.levelSystemXpPerMessage.value),
       cooldown: Number(form.levelSystemCooldown.value)
+    },
+    twitch: {
+      enabled: form.twitchEnabled.checked,
+      channelId: form.twitchChannelId.value,
+      roleToPing: form.twitchRoleToPing.value,
+      embedEnabled: form.twitchEmbed.checked,
+      title: form.twitchTitle.value,
+      description: form.twitchDescription.value,
+      color: form.twitchColor.value,
+      linkedAccounts: linkedAccountsCache
     }
   };
 }
@@ -1738,6 +1800,17 @@ elements.configForm.addEventListener("click", e => {
     elements.saveConfigBtn?.classList.add("changed");
     return;
   }
+
+  const removeTwitch = e.target.closest("[data-remove-twitch]");
+  if (removeTwitch) {
+    const idx = parseInt(removeTwitch.dataset.removeTwitch);
+    if (idx >= 0 && idx < linkedAccountsCache.length) {
+      linkedAccountsCache.splice(idx, 1);
+      renderLinkedAccounts(linkedAccountsCache);
+      elements.saveConfigBtn?.classList.add("changed");
+    }
+    return;
+  }
 });
 
 // Guardar Configuración
@@ -1906,6 +1979,12 @@ async function init() {
   // Crear panel de reaction roles
   document.querySelector("#createReactionPanelBtn")?.addEventListener("click", createReactionPanel);
   document.querySelector("#createTicketPanelBtn")?.addEventListener("click", createTicketPanel);
+
+  // Twitch: Añadir cuenta
+  document.querySelector("#addTwitchAccountBtn")?.addEventListener("click", addTwitchAccount);
+  document.querySelector("#newTwitchAccount")?.addEventListener("keydown", e => {
+    if (e.key === "Enter") addTwitchAccount();
+  });
 
   // Consola de Servidores del Bot dedicada (Propietario)
   elements.toggleBotGuildsBtn?.addEventListener("click", async () => {

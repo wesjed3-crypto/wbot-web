@@ -141,6 +141,17 @@ const defaultGuildConfig = {
     color: "#8b5cf6",
     xpPerMessage: 20,
     cooldown: 60
+  },
+
+  twitch: {
+    enabled: false,
+    linkedAccounts: [],
+    channelId: "",
+    roleToPing: "",
+    embedEnabled: true,
+    title: "🔴 {streamer} está en vivo!",
+    description: "**{streamer}** ha empezado a streamear en Twitch!\n\n🎮 **Juego:** {game}\n📺 **Título:** {title}\n👀 **Míralo en:** https://twitch.tv/{streamer}",
+    color: "#9146FF"
   }
 };
 
@@ -1237,6 +1248,18 @@ app.put("/api/guilds/:guildId/config", requireAuth, async (req, res) => {
       color: String(incoming.levelSystem?.color || "#8b5cf6").trim(),
       xpPerMessage: Math.max(1, Math.min(100, Number(incoming.levelSystem?.xpPerMessage || 20))),
       cooldown: Math.max(10, Math.min(300, Number(incoming.levelSystem?.cooldown || 60)))
+    };
+
+    // Twitch
+    guildConfig.twitch = {
+      enabled: Boolean(incoming.twitch?.enabled),
+      linkedAccounts: Array.isArray(incoming.twitch?.linkedAccounts) ? incoming.twitch.linkedAccounts : (config.twitch?.linkedAccounts || []),
+      channelId: String(incoming.twitch?.channelId || "").trim(),
+      roleToPing: String(incoming.twitch?.roleToPing || "").trim(),
+      embedEnabled: Boolean(incoming.twitch?.embedEnabled),
+      title: String(incoming.twitch?.title || defaultGuildConfig.twitch.title).trim(),
+      description: String(incoming.twitch?.description || "").trim(),
+      color: String(incoming.twitch?.color || "#9146FF").trim()
     };
 
     res.json(await setGuildConfig(req.params.guildId, guildConfig));
